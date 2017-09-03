@@ -1,5 +1,7 @@
 # Koop Provider for ArcGIS Search
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/koopjs/koop-provider-arcgis-search.svg)](https://greenkeeper.io/)
+
 Provides a GeoService API to ArcGIS Search for Online and Portal
 
 Build your own Koop provider using [koop-provider-sample](https://github.com/koopjs/koop-provider-sample) or [docs](https://koopjs.github.io/docs/specs/provider/).
