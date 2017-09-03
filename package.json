@@ -20,6 +20,7 @@
   "author": "Andrew Turner",
   "license": "Apache-2.0",
   "devDependencies": {
+    "aws-serverless-express": "^3.0.2",
     "nock": "^9.0.2",
     "standard": "^10.0.0",
     "tap-spec": "^4.1.1",
