@@ -1,0 +1,10 @@
+{
+  "lambda": {
+    "role": "arcgis-search-executor",
+    "name": "arcgis-search",
+    "region": "us-east-1"
+  },
+  "api": {
+    "id": "vxyvj8gic7"
+  }
+}
