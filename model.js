@@ -61,6 +61,27 @@ function serializeQueryParams (params) {
   return str.join('&')
 }
 
+// Development Function - outputs string matches in the Item/data
+function inspectData(id, match) {
+  const dataUrl = `http://www.arcgis.com/sharing/rest/content/items/${id}/data?f=json`
+    console.log("dataUrl", dataUrl)
+  request(dataUrl).then((data) => {
+    // console.log("Data", data)
+    let layout = JSON.stringify(data.values.layout);
+    // console.log("layout", layout)
+    
+    let matchLayout = null;
+    if(layout !== undefined && layout !== null) {
+      matchLayout = layout.match(match);
+    } else {
+      console.log("Layout null for ${dataUrl}")
+    }
+    if(matchLayout !== undefined && matchLayout !== null) {
+      console.log(`Match for [${match}] from ${id}`, matchLayout)
+    }
+  })
+}
+
 // This is the only public function you need to implement
 Model.prototype.getData = function (req, callback) {
   const portal = 'http://www.arcgis.com/sharing/rest/search'
@@ -132,6 +153,9 @@ function translate (input) {
 }
 
 function formatFeature (input) {
+
+  // inspectData(input.id, 'https://s3.amazonaws.com/geohub-assets/templates/public-engagement/city-skyline.jpg')
+
   // Most of what we need to do here is extract the longitude and latitude
   let ring = []
   if (input.extent.length === 0) {
