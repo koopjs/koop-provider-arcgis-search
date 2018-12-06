@@ -10,14 +10,14 @@
     "start": "node server.js",
     "debug": "NODE_ENV=test node server.js",
     "test": "standard && tape test/*.js | tap-spec",
-    "lamda-create": "claudia create --name koop-provider-arcgis-search --handler lambda.handler --deploy-proxy-api --region us-east-1 --set-env KOOP_PORT=80,DEPLOY=export",
+    "lambda-create": "claudia create --name koop-provider-arcgis-search --handler lambda.handler --deploy-proxy-api --region us-east-1 --set-env KOOP_PORT=80,DEPLOY=export",
     "lambda-update": "claudia update --set-env KOOP_PORT=80,DEPLOY=export",
     "lambda-production": "claudia update --set-env KOOP_PORT=80,DEPLOY=export --version production"
   },
   "dependencies": {
     "aws-serverless-express": "^3.0.2",
-    "config": "^1.25.1",
-    "koop": "^3.4.0",
+    "config": "^2.0.1",
+    "koop": "^3.10.0",
     "request-promise": "^4.2.1"
   },
   "author": "Andrew Turner",

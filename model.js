@@ -113,6 +113,8 @@ Model.prototype.getData = function (req, callback) {
     requests.push(request(`${portal}?${serializeQueryParams(query)}`))
   }
 
+  console.log(`pass-through requests: ${requests.length}`)
+
   Promise.all(requests)
     .then((pages) => {
       // if (err) return callback(err)
@@ -121,9 +123,13 @@ Model.prototype.getData = function (req, callback) {
       const items = {}
       items.total = pages[0].total
 
+
       items.results = pages.reduce((collection, page) => {
+        console.log(JSON.stringify(page))
         return collection.concat(page.results)
       }, [])
+
+      console.log(`items to translate: ${items.results.length}`)
 
       const geojson = translate(items)
       // Cache data for 10 seconds at a time by setting the ttl or 'Time to Live'
@@ -140,6 +146,8 @@ Model.prototype.getData = function (req, callback) {
       }
       // hand off the data to Koop
       callback(null, geojson)
+    }).catch(e => {
+      console.error(e)
     })
 }
 
