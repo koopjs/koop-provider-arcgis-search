@@ -7,43 +7,46 @@
 */
 const request = require('request-promise').defaults({gzip: true, json: true})
 const _maxPageSize = 100
-const _fieldDictionary = [ { 'name': 'id', 'type': 'esriFieldTypeString', 'alias': 'id', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'owner', 'type': 'esriFieldTypeString', 'alias': 'owner', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'created', 'type': 'esriFieldTypeDate', 'alias': 'created', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'modified', 'type': 'esriFieldTypeDate', 'alias': 'modified', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'guid', 'type': 'esriFieldTypeString', 'alias': 'guid', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'name', 'type': 'esriFieldTypeString', 'alias': 'name', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'title', 'type': 'esriFieldTypeString', 'alias': 'title', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'type', 'type': 'esriFieldTypeString', 'alias': 'type', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'typekeywords', 'type': 'esriFieldTypeString', 'alias': 'typeKeywords', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'description', 'type': 'esriFieldTypeString', 'alias': 'description', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'tags', 'type': 'esriFieldTypeString', 'alias': 'tags', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'snippet', 'type': 'esriFieldTypeString', 'alias': 'snippet', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'thumbnail', 'type': 'esriFieldTypeString', 'alias': 'thumbnail', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'documentation', 'type': 'esriFieldTypeString', 'alias': 'documentation', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'extent', 'type': 'esriFieldTypeString', 'alias': 'extent', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'categories', 'type': 'esriFieldTypeString', 'alias': 'categories', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'spatialReference', 'type': 'esriFieldTypeString', 'alias': 'spatialReference', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'accessInformation', 'type': 'esriFieldTypeString', 'alias': 'accessInformation', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'licenseInfo', 'type': 'esriFieldTypeString', 'alias': 'licenseInfo', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'culture', 'type': 'esriFieldTypeString', 'alias': 'culture', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'properties', 'type': 'esriFieldTypeString', 'alias': 'properties', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'url', 'type': 'esriFieldTypeString', 'alias': 'url', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'proxyFilter', 'type': 'esriFieldTypeString', 'alias': 'proxyFilter', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'access', 'type': 'esriFieldTypeString', 'alias': 'access', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'size', 'type': 'esriFieldTypeInteger', 'alias': 'size', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'appCategories', 'type': 'esriFieldTypeString', 'alias': 'appCategories', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'industries', 'type': 'esriFieldTypeString', 'alias': 'industries', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'languages', 'type': 'esriFieldTypeString', 'alias': 'languages', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'largeThumbnail', 'type': 'esriFieldTypeString', 'alias': 'largeThumbnail', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'banner', 'type': 'esriFieldTypeString', 'alias': 'banner', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'screenshots', 'type': 'esriFieldTypeString', 'alias': 'screenshots', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'listed', 'type': 'esriFieldTypeString', 'alias': 'listed', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'numComments', 'type': 'esriFieldTypeInteger', 'alias': 'numComments', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'numRatings', 'type': 'esriFieldTypeInteger', 'alias': 'numRatings', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'avgRating', 'type': 'esriFieldTypeInteger', 'alias': 'avgRating', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'numViews', 'type': 'esriFieldTypeInteger', 'alias': 'numViews', 'length': null, 'editable': false, 'nullable': true, 'domain': null },
-{ 'name': 'OBJECTID', 'type': 'esriFieldTypeOID', 'alias': 'ID', 'length': null, 'editable': false, 'nullable': false, 'domain': null } ]
+const _fieldDictionary = [ 
+  { 'name': 'id', 'type': 'String', 'alias': 'id' },
+  { 'name': 'owner', 'type': 'String', 'alias': 'owner' },
+  { 'name': 'created', 'type': 'Date', 'alias': 'created' },
+  { 'name': 'modified', 'type': 'Date', 'alias': 'modified' },
+  { 'name': 'guid', 'type': 'String', 'alias': 'guid' },
+  { 'name': 'name', 'type': 'String', 'alias': 'name' },
+  { 'name': 'title', 'type': 'String', 'alias': 'title' },
+  { 'name': 'type', 'type': 'String', 'alias': 'type' },
+  { 'name': 'typekeywords', 'type': 'String', 'alias': 'typeKeywords' },
+  { 'name': 'description', 'type': 'String', 'alias': 'description' },
+  { 'name': 'tags', 'type': 'String', 'alias': 'tags' },
+  { 'name': 'snippet', 'type': 'String', 'alias': 'snippet' },
+  { 'name': 'thumbnail', 'type': 'String', 'alias': 'thumbnail' },
+  { 'name': 'documentation', 'type': 'String', 'alias': 'documentation' },
+  { 'name': 'extent', 'type': 'String', 'alias': 'extent' },
+  { 'name': 'categories', 'type': 'String', 'alias': 'categories' },
+  { 'name': 'spatialReference', 'type': 'String', 'alias': 'spatialReference' },
+  { 'name': 'accessInformation', 'type': 'String', 'alias': 'accessInformation' },
+  { 'name': 'licenseInfo', 'type': 'String', 'alias': 'licenseInfo' },
+  { 'name': 'culture', 'type': 'String', 'alias': 'culture' },
+  { 'name': 'properties', 'type': 'String', 'alias': 'properties' },
+  { 'name': 'url', 'type': 'String', 'alias': 'url' },
+  { 'name': 'proxyFilter', 'type': 'String', 'alias': 'proxyFilter' },
+  { 'name': 'access', 'type': 'String', 'alias': 'access' },
+  { 'name': 'size', 'type': 'Integer', 'alias': 'size' },
+  { 'name': 'appCategories', 'type': 'String', 'alias': 'appCategories' },
+  { 'name': 'industries', 'type': 'String', 'alias': 'industries' },
+  { 'name': 'languages', 'type': 'String', 'alias': 'languages' },
+  { 'name': 'largeThumbnail', 'type': 'String', 'alias': 'largeThumbnail' },
+  { 'name': 'banner', 'type': 'String', 'alias': 'banner' },
+  { 'name': 'screenshots', 'type': 'String', 'alias': 'screenshots' },
+  { 'name': 'listed', 'type': 'String', 'alias': 'listed' },
+  { 'name': 'numComments', 'type': 'Integer', 'alias': 'numComments' },
+  { 'name': 'numRatings', 'type': 'Integer', 'alias': 'numRatings' },
+  { 'name': 'avgRating', 'type': 'Double', 'alias': 'avgRating' },
+  { 'name': 'numViews', 'type': 'Integer', 'alias': 'numViews' },
+  { 'name': 'scoreCompleteness', 'type': 'Integer' },
+  { 'name': 'groupDesignations', 'type': 'String' }
+]
 
 function Model (koop) {}
 
@@ -91,6 +94,7 @@ Model.prototype.getData = function (req, callback) {
     req.query = {}
   }
 
+  
   // TODO: ensure appropriate quotes for Search in Online
   query.q = (req.query.where || '*').replace(/\s+=\s+/g, ':').replace(/'/g, '"')
 
@@ -125,11 +129,8 @@ Model.prototype.getData = function (req, callback) {
 
 
       items.results = pages.reduce((collection, page) => {
-        console.log(JSON.stringify(page))
         return collection.concat(page.results)
       }, [])
-
-      console.log(`items to translate: ${items.results.length}`)
 
       const geojson = translate(items)
       // Cache data for 10 seconds at a time by setting the ttl or 'Time to Live'
