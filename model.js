@@ -6,6 +6,7 @@
   Documentation: http://koopjs.github.io/docs/specs/provider/
 */
 const request = require('request-promise').defaults({gzip: true, json: true})
+const farmhash = require('farmhash')
 const _maxPageSize = 100
 const _fieldDictionary = [ 
   { 'name': 'id', 'type': 'String', 'alias': 'id' },
@@ -45,7 +46,8 @@ const _fieldDictionary = [
   { 'name': 'avgRating', 'type': 'Double', 'alias': 'avgRating' },
   { 'name': 'numViews', 'type': 'Integer', 'alias': 'numViews' },
   { 'name': 'scoreCompleteness', 'type': 'Integer' },
-  { 'name': 'groupDesignations', 'type': 'String' }
+  { 'name': 'groupDesignations', 'type': 'String' },
+  { 'name': 'itemIdHash', 'type': 'Integer' },
 ]
 
 function Model (koop) {}
@@ -135,7 +137,6 @@ Model.prototype.getData = function (req, callback) {
       const geojson = translate(items)
       // Cache data for 10 seconds at a time by setting the ttl or 'Time to Live'
       // geojson.ttl = 10
-      geojson.metadata = { name: 'ArcGIS Search' }
       geojson.filtersApplied = { where: true }
 
       geojson.metadata = {
@@ -143,7 +144,8 @@ Model.prototype.getData = function (req, callback) {
         description: 'Search content in ArcGIS Online',
         displayField: 'title',
         fields: _fieldDictionary,
-        geometryType: 'Polygon'
+        geometryType: 'Polygon',
+        idField: 'itemIdHash'
       }
       // hand off the data to Koop
       callback(null, geojson)
@@ -184,12 +186,30 @@ function formatFeature (input) {
       'coordinates': [ring]
     }
   }
+  
+  // Create a 32-bit integer for use as the OBJECTID
+  feature.properties.itemIdHash = transformId(feature.properties)
+
   // But we also want to translate a few of the date fields so they are easier to use downstream
   const dateFields = ['created', 'modified']
   dateFields.forEach(field => {
     feature.properties[field] = new Date(feature.properties[field]).toISOString()
   })
   return feature
+}
+
+/**
+ * Create an ID that is an integer in range of 0 - 2147483647. Should be noted that
+ * the scaling of unsigned 32-bit integers to a range of 0 - 2147483647 increases likely hood
+ * that two different input receive the same output
+ * @param {*} id 
+ */
+function transformId (id) {
+  // Hash to 32 bit unsigned integer
+  const hash = farmhash.hash32(id.toString());
+  
+  // Normalize to range of postive values of signed integer
+  return Math.round((hash / 4294967295) * (2147483647))
 }
 
 module.exports = Model
