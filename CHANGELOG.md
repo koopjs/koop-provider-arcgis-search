@@ -1,0 +1,9 @@
+# Change Log
+
+All notable changes to this project will be documented in this file. This project adheres to
+[Semantic Versioning](http://semver.org/).
+
+## [1.0.0] - 2019-01-02
+Initial release of a ArcGIS Online and Portal search provider.
+
+[1.0.0]: https://github.com/koopjs/koop-provider-file-geojson/releases/tag/v1.0.0

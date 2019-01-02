@@ -1,5 +1,5 @@
 {
-  "name": "koop-provider-arcgis-search",
+  "name": "@koopjs/provider-arcgis-search",
   "version": "1.0.0",
   "description": "Koop provider for ArcGIS Search",
   "main": "index.js",
