@@ -98,7 +98,8 @@ Model.prototype.getData = function (req, callback) {
 
   
   // TODO: ensure appropriate quotes for Search in Online
-  query.q = (req.query.where || '*').replace(/\s+=\s+/g, ':').replace(/'/g, '"')
+  // Remove any variant of 1=1 as it is not recognized by AGO search; replace = with; replace and ' with "
+  query.q = (req.query.where || '*').replace(/1=1|(\(1=1\))|(AND\s1=1)|(AND\s\(1=1\))/g, '').replace(/\s+=\s+/g, ':').replace(/'/g, '"').replace(/[ \t]+$/, '')
 
   query.num = req.query.resultRecordCount || 5000
   query.start = req.query.resultOffset || 1
