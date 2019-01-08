@@ -189,7 +189,7 @@ function formatFeature (input) {
   }
   
   // Create a 32-bit integer for use as the OBJECTID
-  feature.properties.itemIdHash = transformId(feature.properties)
+  feature.properties.itemIdHash = transformId(feature.properties.id)
 
   // But we also want to translate a few of the date fields so they are easier to use downstream
   const dateFields = ['created', 'modified']
