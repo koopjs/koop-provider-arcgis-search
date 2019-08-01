@@ -1,9 +1,6 @@
 /*
   model.js
-
   This file is required. It must export a class with at least one public function called `getData`
-
-  Documentation: http://koopjs.github.io/docs/specs/provider/
 */
 const request = require('request-promise').defaults({ gzip: true, json: true })
 const farmhash = require('farmhash')
@@ -50,7 +47,7 @@ const _fieldDictionary = [
   { name: 'itemIdHash', type: 'Integer' }
 ]
 
-function Model (koop) {}
+function Model () {}
 
 function serializeQueryParams (params) {
   return Object.keys(params).map(param => {
@@ -91,8 +88,6 @@ Model.prototype.getData = function (req, callback) {
     query.start = parseInt(query.start) + _maxPageSize
     requests.push(request(`${portal}?${serializeQueryParams(query)}`))
   }
-
-  console.log(`pass-through requests: ${requests.length}`)
 
   Promise.all(requests)
     .then((pages) => {

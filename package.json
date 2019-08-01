@@ -12,7 +12,6 @@
     "test": "standard && tape test/*.js | tap-spec"
   },
   "dependencies": {
-    "aws-serverless-express": "^3.0.2",
     "config": "^2.0.1",
     "farmhash": "^2.1.0",
     "koop": "^3.10.0",
