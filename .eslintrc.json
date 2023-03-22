@@ -1,0 +1,19 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 11
+  },
+  "env": {
+    "browser": false,
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "plugins": [],
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "rules": {
+    "semi": [2, "always"]
+  }
+}

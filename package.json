@@ -9,12 +9,15 @@
   "scripts": {
     "start": "node server.js",
     "debug": "NODE_ENV=test node server.js",
-    "test": "standard && tape test/*.js | tap-spec"
+    "test": "standard && tape test/*.js | tap-spec",
+    "lint": "eslint ."
   },
   "dependencies": {
     "config": "^2.0.1",
     "farmhash": "^2.1.0",
-    "koop": "^3.10.0",
+    "koop": "^4.2.4",
+    "proj4": "^2.9.0",
+    "request": "^2.88.2",
     "request-promise": "^4.2.1"
   },
   "author": "Andrew Turner",
@@ -22,6 +25,8 @@
   "devDependencies": {
     "nock": "^9.0.2",
     "standard": "^10.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "~8.3.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3"
   },
