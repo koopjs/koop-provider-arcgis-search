@@ -7,15 +7,18 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node server.js",
-    "debug": "NODE_ENV=test node server.js",
-    "test": "standard && tape test/*.js | tap-spec",
-    "lint": "eslint ."
+    "start": "cd koop-server-app && node server.js",
+    "debug": "cd koop-server-app && NODE_ENV=test node server.js",
+    "lint": "eslint .",
+    "test": "jest --coverage --rootDir ./test",
+    "test:cov": "jest --coverage --rootDir ./test --coverageReporters='json-summary' && coverage-badges --source ./test/coverage/coverage-summary.json --output ./coverage.svg",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@koopjs/logger": "^5.0.0",
     "config": "^2.0.1",
     "farmhash": "^2.1.0",
-    "koop": "^4.2.4",
+    "joi": "^17.9.1",
     "proj4": "^2.9.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.1"
@@ -23,12 +26,12 @@
   "author": "Andrew Turner",
   "license": "Apache-2.0",
   "devDependencies": {
-    "nock": "^9.0.2",
-    "standard": "^10.0.0",
+    "coverage-badges-cli": "^1.1.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "~8.3.0",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.6.3"
+    "jest": "^29.5.0",
+    "nock": "^13.3.0",
+    "standard": "^10.0.0"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,15 @@
+{
+  "name": "example-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --inspect server.js"
+  },
+  "dependencies": {
+    "koop": "^4.2.4",
+    "config": "^3.2.5"
+  },
+  "author": "",
+  "license": "ISC"
+}

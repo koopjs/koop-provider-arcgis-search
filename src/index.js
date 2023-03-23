@@ -11,8 +11,7 @@ const provider = {
   hosts: false,
   disableIdParam: true,
   Model: require('./model'),
-  routes: require('./routes'),
-  version: require('./package.json').version
+  version: require('../package.json').version
 };
 
 module.exports = provider;

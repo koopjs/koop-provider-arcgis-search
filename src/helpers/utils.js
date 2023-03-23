@@ -1,27 +1,5 @@
-const request = require('request-promise').defaults({ gzip: true, json: true });
 const farmhash = require('farmhash');
 const proj4 = require("proj4");
-
-// Development Function - outputs string matches in the Item/data
-function inspectData (id, match) {
-  const dataUrl = `http://www.arcgis.com/sharing/rest/content/items/${id}/data?f=json`;
-  console.log('dataUrl', dataUrl);
-  request(dataUrl).then((data) => {
-    // console.log("Data", data)
-    const layout = JSON.stringify(data.values.layout);
-    // console.log("layout", layout)
-
-    let matchLayout = null;
-    if (layout !== undefined && layout !== null) {
-      matchLayout = layout.match(match);
-    } else {
-      console.log(`Layout null for ${dataUrl}`);
-    }
-    if (matchLayout !== undefined && matchLayout !== null) {
-      console.log(`Match for [${match}] from ${id}`, matchLayout);
-    }
-  });
-}
 
 function serializeQueryParams(params) {
   return Object.keys(params).map(param => {
@@ -29,15 +7,6 @@ function serializeQueryParams(params) {
     if (typeof val !== 'string') val = JSON.stringify(val);
     return `${encodeURIComponent(param)}=${encodeURIComponent(val)}`;
   }).join('&');
-}
-
-function translate(input) {
-  const features = {
-    type: 'FeatureCollection',
-    features: input.map(formatFeature),
-    count: input.total
-  };
-  return features;
 }
 
 function formatFeature(input) {
@@ -87,8 +56,11 @@ function transformId(id) {
   return Math.round((hash / 4294967295) * (2147483647));
 }
 
-function normalizeCoordinates(coordinates) {
-  return proj4('EPSG:3857', 'EPSG:4326', coordinates);
+function convertToWGS84(coordinates, spatialReference) {
+  const normalizedCoordinates = spatialReference === 4326 ?
+    coordinates :
+    coordinates.map((co) => proj4(`EPSG:${spatialReference}`, 'EPSG:4326', co));
+  return normalizedCoordinates.splice(0, 2);
 }
 
-module.exports = { inspectData, translate, serializeQueryParams, normalizeCoordinates };
+module.exports = { formatFeature, serializeQueryParams, convertToWGS84 };

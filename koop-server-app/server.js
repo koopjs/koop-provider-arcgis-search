@@ -7,7 +7,7 @@ const Koop = require('koop');
 const koop = new Koop();
 
 // Install the Sample Provider
-const provider = require('./');
+const provider = require('../src');
 koop.register(provider, { routePrefix: '/api/v3/connectors' });
 
 if (process.env.DEPLOY === 'export') {
