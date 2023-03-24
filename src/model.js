@@ -157,7 +157,7 @@ class ArcgisSearchModel {
     return items;
   }
 
-  translate(input) {
+  translateGeojson(input) {
     const features = {
       type: 'FeatureCollection',
       features: input.items.map(formatFeature),
@@ -167,7 +167,7 @@ class ArcgisSearchModel {
   }
 
   getGeoJson(items, fieldDictionary) {
-    const geojson = this.translate(items);
+    const geojson = this.translateGeojson(items);
     // Cache data for 10 seconds at a time by setting the ttl or 'Time to Live'
     // geojson.ttl = 10
     geojson.filtersApplied = { where: true };

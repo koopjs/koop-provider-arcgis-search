@@ -1,10 +1,11 @@
 
 const nock = require('nock');
 const ArcgisSearchModel = require('../src/model');
-const limitResponse = require('./fixtures/within-limit-response.json');
-const exceeedLimitResponse = require('./fixtures/exceed-limit-response.json');
-const { serializeQueryParams } = require('../src/helpers/utils');
+const withinLimitResponseFixture = require('./fixtures/within-limit-portal-response.json');
+const exceeedLimitResponseFixture = require('./fixtures/exceed-limit-portal-response.json');
+const { serializeQueryParams, formatFeature } = require('../src/helpers/utils');
 const ArcgisSearchProviderError = require('../src/helpers/arcgis-search-provider-error');
+const FIELD_DICTIONARY = require('../src/helpers/field-dictionary');
 
 describe('ArcgisSearchModel', () => {
   it('should get batched portal items in geojson format when total item count is greater than 100', async () => {
@@ -49,11 +50,11 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, exceeedLimitResponse);
+      .reply(200, exceeedLimitResponseFixture);
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(secondPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -62,10 +63,25 @@ describe('ArcgisSearchModel', () => {
 
     await model.getData(req, (err, geojson) => {
       expect(geojson).toBeDefined();
+
       expect(Array.isArray(geojson.features)).toBe(true);
       expect(geojson.features.length).toBe(146);
+
       expect(geojson.metadata).toBeDefined();
+      expect(geojson.metadata).toStrictEqual({
+        name: 'ArcGIS Search',
+        description: 'Search content in ArcGIS Online',
+        displayField: 'title',
+        fields: FIELD_DICTIONARY,
+        geometryType: 'Polygon',
+        idField: 'itemIdHash'
+      });
+      
       expect(geojson.type).toBe('FeatureCollection');
+      expect([
+        ...exceeedLimitResponseFixture.results, 
+        ...withinLimitResponseFixture.results
+      ].map(formatFeature)).toStrictEqual(geojson.features);
       expect(builPortalQuerySpy).toHaveBeenCalledWith(req.query);
       expect(getPortalItemsSpy).toBeCalledTimes(1);
       expect(buildRemainingPageRequestsSpy).toHaveBeenCalledWith({
@@ -111,7 +127,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -121,10 +137,22 @@ describe('ArcgisSearchModel', () => {
     await model.getData(req, (err, geojson) => {
       expect(geojson).toBeDefined();
       expect(geojson.count).toBe(46);
+
       expect(geojson.metadata).toBeDefined();
+      expect(geojson.metadata).toStrictEqual({
+        name: 'ArcGIS Search',
+        description: 'Search content in ArcGIS Online',
+        displayField: 'title',
+        fields: FIELD_DICTIONARY,
+        geometryType: 'Polygon',
+        idField: 'itemIdHash'
+      });
+      
       expect(geojson.type).toBe('FeatureCollection');
       expect(Array.isArray(geojson.features)).toBe(true);
       expect(geojson.features.length).toBe(46);
+      
+      expect(withinLimitResponseFixture.results.map(formatFeature)).toStrictEqual(geojson.features);
       expect(builPortalQuerySpy).toHaveBeenCalledWith(req.query);
       expect(buildRemainingPageRequestsSpy).not.toBeCalled();
       expect(getPortalItemsSpy).toHaveBeenCalledWith('http://www.arcgis.com/sharing/rest/search', firstPagePortalQuery, 100);
@@ -207,7 +235,7 @@ describe('ArcgisSearchModel', () => {
 
     jest
       .spyOn(model, 'buildPortalQuery')
-      .mockImplementation(() => {throw new Error();});
+      .mockImplementation(() => { throw new Error(); });
 
     try {
       await model.getData(req, () => { });
@@ -252,7 +280,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
 
@@ -301,7 +329,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -351,7 +379,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -397,7 +425,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -450,7 +478,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -488,7 +516,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -528,7 +556,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -582,7 +610,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -634,7 +662,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -681,7 +709,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
@@ -729,7 +757,7 @@ describe('ArcgisSearchModel', () => {
 
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
-      .reply(200, limitResponse);
+      .reply(200, withinLimitResponseFixture);
 
     const model = new ArcgisSearchModel();
     const builPortalQuerySpy = jest.spyOn(model, 'buildPortalQuery');
