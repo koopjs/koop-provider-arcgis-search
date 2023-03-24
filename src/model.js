@@ -23,7 +23,7 @@ class ArcgisSearchModel {
       callback(null, geojson);
     } catch (error) {
       throw new ArcgisSearchProviderError(
-        error.message || 'Error in Arcgis Search Provider',
+        error?.message || 'Error in Arcgis Search Provider',
         error?.statusCode || 500
       );
     }
