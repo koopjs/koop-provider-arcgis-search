@@ -14,7 +14,7 @@
   "dependencies": {
     "config": "^2.0.1",
     "farmhash": "^2.1.0",
-    "koop": "^3.10.0",
+    "koop": "^5.0.0",
     "request-promise": "^4.2.1"
   },
   "author": "Andrew Turner",
