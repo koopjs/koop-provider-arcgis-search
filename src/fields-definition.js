@@ -1,4 +1,4 @@
-const fieldDictionary = [
+const fieldsDefinition = Object.freeze([
     { name: 'id', type: 'String', alias: 'id' },
     { name: 'owner', type: 'String', alias: 'owner' },
     { name: 'created', type: 'Date', alias: 'created' },
@@ -38,6 +38,6 @@ const fieldDictionary = [
     { name: 'scoreCompleteness', type: 'Integer' },
     { name: 'groupDesignations', type: 'String' },
     { name: 'itemIdHash', type: 'Integer' }
-];
+]);
 
-module.exports = fieldDictionary;
+module.exports = fieldsDefinition;

@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const objTypeGeometryQuerySchema = Joi.object({
+const geoservicesEnvelopeObjSchema = Joi.object({
     xmin: Joi.number().required(),
     ymin: Joi.number().required(),
     xmax: Joi.number().required(),
@@ -9,6 +9,6 @@ const objTypeGeometryQuerySchema = Joi.object({
         wkid: Joi.number().required()
     }
 });
-const arrayTypeGeometryQuerySchema = Joi.array().items(Joi.number()).length(4).required();
+const geoservicesEnvelopeArraySchema = Joi.array().items(Joi.number()).length(4).required();
 
-module.exports = { objTypeGeometryQuerySchema, arrayTypeGeometryQuerySchema };
+module.exports = { geoservicesEnvelopeObjSchema, geoservicesEnvelopeArraySchema };
