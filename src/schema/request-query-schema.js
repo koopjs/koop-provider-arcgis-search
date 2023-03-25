@@ -11,7 +11,7 @@ const requestQuerySchema = Joi.object().keys({
         is: 'esriGeometryEnvelope',
         then: Joi.alternatives(geoservicesEnvelopeObjSchema, geoservicesEnvelopeArraySchema)
     }),
-    geometryType: Joi.string().valid('esriGeometryEnvelope', 'esriGeometryEnvelope')
+    geometryType: Joi.string().valid('esriGeometryEnvelope', 'esriGeometryPolygon')
 }).unknown(true);
 
 module.exports = { requestQuerySchema };
