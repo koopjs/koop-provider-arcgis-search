@@ -1,7 +1,6 @@
 
 const proj4 = require("proj4");
 const PROJ4_WKIDS = [4326, 4269, 3857, 3785, 900913, 102113]; // supported wkids by proj4
-const { geoservicesEnvelopeObjSchema, geoservicesEnvelopeArraySchema } = require('../schema/geometry-schema');
 
 function buildPortalQuery(requestQuery, log) {
   const portalQuery = { f: 'json' };

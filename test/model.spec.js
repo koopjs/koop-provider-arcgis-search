@@ -1,4 +1,4 @@
-
+/* eslint-disable no-unused-vars */
 const nock = require('nock');
 const ArcgisSearchModel = require('../src/model');
 const withinLimitResponseFixture = require('./fixtures/within-limit-portal-response.json');
@@ -254,7 +254,7 @@ describe('ArcgisSearchModel', () => {
 
     await model.getData(req, (err, geojson) => {
       expect(err.statusCode).toBe(500);
-      expect(err.message).toBe('\"inSR\" must be a number');
+      expect(err.message).toBe('"inSR" must be a number');
       expect(err).toBeInstanceOf(ArcgisSearchProviderError);
     });
   });
