@@ -48,8 +48,8 @@ function addBboxToPortalQuery(portalQuery, requestQuery, log) {
 function addSortOptionsToPortalQuery(portalQuery, orderByFields) {
   const { orderBy } = orderByFields;
   const orderByArr = orderBy.split(' ');
-  portalQuery.sortField = orderByArr[0] || 'title';
-  portalQuery.sortOrder = orderByArr[1] || 'DESC';
+  portalQuery.sortField = orderByArr[0];
+  portalQuery.sortOrder = orderByArr.length === 2 ? orderByArr[1] : 'DESC';
   return portalQuery;
 }
 

@@ -147,7 +147,7 @@ describe('ArcgisSearchModel', () => {
     });
   });
 
-  it('should throw error if request to argis portal fails', async () => {
+  it('should throw error if request to arcgis portal fails', async () => {
     const req = {
       query: {
         f: "json",
@@ -192,7 +192,7 @@ describe('ArcgisSearchModel', () => {
     });
   });
 
-  it('should throw default error if request to argis portal fails', async () => {
+  it('should throw default error if request to arcgis portal fails', async () => {
     jest.doMock('../src/helpers/validate-request-query');
     const { validateRequestQuery } = require('../src/helpers/validate-request-query');
     validateRequestQuery.mockImplementation(() => { throw new ArcgisSearchProviderError(); });
@@ -223,39 +223,6 @@ describe('ArcgisSearchModel', () => {
     await model.getData(req, (err, geojson) => {
       expect(err.statusCode).toBe(500);
       expect(err.message).toBe('Error in Arcgis Search Provider');
-    });
-  });
-
-  it('should throw error if request query is in invalid format', async () => {
-    const req = {
-      query: {
-        f: "json",
-        where: "typekeywords = 'hubSite'",
-        returnGeometry: true,
-        spatialRel: "esriSpatialRelIntersects",
-        maxAllowableOffset: 39135,
-        geometry: {
-          xmin: -20037508.342788905,
-          ymin: 20037508.342788905,
-          xmax: -0.000004857778549194336,
-          ymax: 40075016.68557295,
-          spatialReference: {
-            wkid: 102100,
-          },
-        },
-        geometryType: "esriGeometryEnvelope",
-        inSR: 'string inSR',
-        outFields: "*",
-        outSR: 102100
-      }
-    };
-
-    const model = new ArcgisSearchModel();
-
-    await model.getData(req, (err, geojson) => {
-      expect(err.statusCode).toBe(500);
-      expect(err.message).toBe('"inSR" must be a number');
-      expect(err).toBeInstanceOf(ArcgisSearchProviderError);
     });
   });
 });

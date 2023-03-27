@@ -90,7 +90,7 @@ describe('Portal query builder', () => {
             outFields: "*",
             outSR: 102100,
             orderByFields: {
-                orderBy: ' '
+                orderBy: 'title'
             }
         };
         const portalQuery = buildPortalQuery(requestQuery, mockLogger);

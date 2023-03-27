@@ -28,7 +28,7 @@ class ArcgisSearchModel {
       callback(
         new ArcgisSearchProviderError(
           error?.response?.data || error.message || 'Error in Arcgis Search Provider',
-          error?.response?.status || 500,
+          error?.response?.status || error.statusCode || 500,
           error.stack
         )
       );

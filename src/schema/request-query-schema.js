@@ -7,6 +7,9 @@ const requestQuerySchema = Joi.object().keys({
     inSR: Joi.number().positive().integer(),
     outSR: Joi.number().positive().integer(),
     where: Joi.string(),
+    orderByFields: Joi.object().keys({
+        orderBy: Joi.string().pattern(new RegExp(/^[a-zA-Z]+\s?[a-zA-Z]*$/)),
+    }),
     geometry: Joi.when('geometryType', {
         is: 'esriGeometryEnvelope',
         then: Joi.alternatives(geoservicesEnvelopeObjSchema, geoservicesEnvelopeArraySchema)
