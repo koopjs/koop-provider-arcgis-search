@@ -3,12 +3,12 @@ process.on('SIGINT', () => process.exit(0));
 process.on('SIGTERM', () => process.exit(0));
 
 // Initialize Koop
-const Koop = require('koop');
+const Koop = require('@koopjs/koop-core');
 const koop = new Koop();
 
 // Install the Sample Provider
 const provider = require('../src');
-koop.register(provider, { routePrefix: '/api/v3/connectors' });
+koop.register(provider, { routePrefix: '/api/v3/connectors', ttl: 10 });
 
 if (process.env.DEPLOY === 'export') {
   module.exports = koop.server;

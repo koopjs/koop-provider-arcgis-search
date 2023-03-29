@@ -13,8 +13,8 @@ const FIELDS_DEFINITION = require('./fields-definition');
 const PORTAL_URL = 'http://www.arcgis.com/sharing/rest/search';
 
 class ArcgisSearchModel {
-  constructor(options = {}) {
-    this.log = options.log;
+  constructor(koop, options = {}) {
+    this.log = koop.log;
     this.ttl = options.ttl || 0;
   }
   // Main getData method which is used to send data to Koop 
