@@ -29,7 +29,6 @@ const spatialReferenceSchema = Joi.object({
 const requestQuerySchema = Joi.object().keys({
   resultRecordCount: Joi.number().positive().integer(),
   resultOffset: Joi.number().positive().integer(),
-  num: Joi.number().positive().integer(),
   inSR: Joi.alternatives(Joi.number().positive().integer(), spatialReferenceSchema),
   where: Joi.string(),
   orderByFields: Joi.object().keys({
