@@ -23,6 +23,12 @@ class ArcgisSearchModel {
       const portalQuery = buildPortalQuery(req.query, this.log);
       const items = await getPortalItems(PORTAL_URL, portalQuery, MAX_PAGE_SIZE);
       const geojson = getGeoJson(items, FIELDS_DEFINITION);
+      
+      // Cache data for 10 seconds at a time by setting the ttl or 'Time to Live'
+      geojson.ttl = 10;
+      geojson.filtersApplied = { where: true };
+      geojson.geometry = true;
+
       callback(null, geojson);
     } catch (error) {
       callback(

@@ -130,7 +130,7 @@ describe('Validate Request Query', () => {
             validateRequestQuery(requestQuery);
         } catch (err) {
             expect(err.statusCode).toBe(400);
-            expect(err.message).toBe('"inSR" must be a number');
+            expect(err.message).toBe('"inSR" must be one of [number, object]');
             expect(err).toBeInstanceOf(ArcgisSearchProviderError);
         };
     });
@@ -153,6 +153,71 @@ describe('Validate Request Query', () => {
             },
             geometryType: "esriGeometryEnvelope",
             inSR: 3785,
+            outFields: "*",
+            outSR: 102100,
+            orderByFields: {
+                orderBy: 'title'
+            }
+        };
+        
+        expect(() => validateRequestQuery(requestQuery)).not.toThrow(ArcgisSearchProviderError);
+    });
+
+    it('should support WKID spatial reference in inSR query', async () => {
+        const requestQuery = {
+            f: "json",
+            where: "typekeywords = 'hubSite'",
+            returnGeometry: true,
+            spatialRel: "esriSpatialRelIntersects",
+            maxAllowableOffset: 39135,
+            geometry: {
+                xmin: -20037508.342788905,
+                ymin: 20037508.342788905,
+                xmax: -0.000004857778549194336,
+                ymax: 40075016.68557295,
+                spatialReference: {
+                    wkid: 3785,
+                },
+            },
+            geometryType: "esriGeometryEnvelope",
+            inSR: {
+                spatialReference: {
+                    wkid: 102100,
+                    vcsWkid: 3857
+                }
+            },
+            outFields: "*",
+            outSR: 102100,
+            orderByFields: {
+                orderBy: 'title'
+            }
+        };
+        
+        expect(() => validateRequestQuery(requestQuery)).not.toThrow(ArcgisSearchProviderError);
+    });
+
+    it('should support WKT spatial reference in inSR query', async () => {
+        const requestQuery = {
+            f: "json",
+            where: "typekeywords = 'hubSite'",
+            returnGeometry: true,
+            spatialRel: "esriSpatialRelIntersects",
+            maxAllowableOffset: 39135,
+            geometry: {
+                xmin: -20037508.342788905,
+                ymin: 20037508.342788905,
+                xmax: -0.000004857778549194336,
+                ymax: 40075016.68557295,
+                spatialReference: {
+                    wkid: 3785,
+                },
+            },
+            geometryType: "esriGeometryEnvelope",
+            inSR: {
+                spatialReference: {
+                    wkt: 102100
+                }
+            },
             outFields: "*",
             outSR: 102100,
             orderByFields: {

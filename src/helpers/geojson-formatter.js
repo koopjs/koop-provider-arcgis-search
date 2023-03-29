@@ -2,14 +2,16 @@ const { arcgisToGeoJSON } = require("@terraformer/arcgis");
 const farmhash = require('farmhash');
 
 function formatGeoJsonFeature(input) {
-  if (input.extent.length === 0) {
-    input.extent = [[0, 0], [1, 1]];
-  }
-  const [[xmin, ymin], [xmax, ymax]] = input.extent;
   const feature = {
     type: 'Feature',
-    properties: input,
-    geometry: arcgisToGeoJSON({
+    properties: input
+  };
+
+  if (input.extent.length === 0) {
+    feature.geometry = null;
+  } else {
+    const [[xmin, ymin], [xmax, ymax]] = input.extent;
+    feature.geometry = arcgisToGeoJSON({
       xmin,
       ymin,
       xmax,
@@ -17,8 +19,9 @@ function formatGeoJsonFeature(input) {
       spatialReference: {
         wkid: 4326
       }
-    })
-  };
+    });
+  }
+  
   feature.properties.itemIdHash = transformId(feature.properties.id);
   return feature;
 }

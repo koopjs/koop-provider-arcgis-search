@@ -30,11 +30,10 @@ function getTotalBatch(total, maxPageSize) {
 
 function buildRemainingPageRequests({ portalUrl, query, totalBatch, maxPageSize }) {
     const requests = [];
-    const portalQuery = Object.assign({}, query);
     // Multiple batches each with maxPageSize number of records
     for (let i = 1; i < totalBatch; i++) {
-        portalQuery.start += maxPageSize;
-        requests.push(axios.get(`${portalUrl}?${serializeQueryParams(portalQuery)}`));
+        query.start += maxPageSize;
+        requests.push(axios.get(`${portalUrl}?${serializeQueryParams(query)}`));
     }
     return requests;
 }
