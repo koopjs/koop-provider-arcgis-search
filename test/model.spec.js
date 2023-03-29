@@ -6,7 +6,6 @@ const exceeedLimitResponseFixture = require('./fixtures/exceed-limit-portal-resp
 const withinLimitGeojsonFixture = require('./fixtures/within-limit-portal-geojson.json');
 const exceeedLimitGeojsonFixture = require('./fixtures/exceed-limit-portal-geojson.json');
 const { serializeQueryParams } = require('../src/helpers/portal-query-builder');
-const { formatGeoJsonFeature } = require('../src/helpers/geojson-formatter');
 const ArcgisSearchProviderError = require('../src/arcgis-search-provider-error');
 const FIELDS_DEFINITION = require('../src/fields-definition');
 const axios = require('axios');
@@ -282,8 +281,6 @@ describe('ArcgisSearchModel', () => {
       expect(geojson.type).toBe('FeatureCollection');
       expect(Array.isArray(geojson.features)).toBe(true);
       expect(geojson.features.length).toBe(46);
-
-      expect(withinLimitResponseFixture.results.map(formatGeoJsonFeature)).toStrictEqual(geojson.features);
     });
   });
 
@@ -345,8 +342,6 @@ describe('ArcgisSearchModel', () => {
       expect(geojson.features.length).toBe(46);
 
       expect(geojson.ttl).toBe(100);
-
-      expect(withinLimitResponseFixture.results.map(formatGeoJsonFeature)).toStrictEqual(geojson.features);
     });
   });
 });

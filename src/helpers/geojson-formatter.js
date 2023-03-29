@@ -60,4 +60,4 @@ function getGeoJson(items, fieldsDefination) {
   return geojson;
 }
 
-module.exports = { formatGeoJsonFeature, getGeoJson };
+module.exports = { getGeoJson };
