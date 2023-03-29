@@ -10,8 +10,8 @@
     "start": "cd koop-server-app && node server.js",
     "debug": "cd koop-server-app && NODE_ENV=test node server.js",
     "lint": "eslint .",
-    "test": "jest --coverage --rootDir ./test",
-    "test:cov": "jest --coverage --rootDir ./test --coverageReporters='json-summary' && coverage-badges --source ./test/coverage/coverage-summary.json --output ./coverage.svg",
+    "test": "jest --coverage",
+    "test:cov": "jest --coverage --coverageReporters='json-summary' && coverage-badges --source ./test/coverage/coverage-summary.json --output ./coverage.svg",
     "test:watch": "jest --watch"
   },
   "dependencies": {

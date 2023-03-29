@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 const nock = require('nock');
 const ArcgisSearchModel = require('../src/model');
-const withinLimitResponseFixture = require('./fixtures/within-limit-portal-response.json');
-const exceeedLimitResponseFixture = require('./fixtures/exceed-limit-portal-response.json');
-const withinLimitGeojsonFixture = require('./fixtures/within-limit-portal-geojson.json');
-const exceeedLimitGeojsonFixture = require('./fixtures/exceed-limit-portal-geojson.json');
+const withinLimitResponseFixture = require('../test/fixtures/within-limit-portal-response.json');
+const exceeedLimitResponseFixture = require('../test/fixtures/exceed-limit-portal-response.json');
+const withinLimitGeojsonFixture = require('../test/fixtures/within-limit-portal-geojson.json');
+const exceeedLimitGeojsonFixture = require('../test/fixtures/exceed-limit-portal-geojson.json');
 const { serializeQueryParams } = require('../src/helpers/portal-query-builder');
 const ArcgisSearchProviderError = require('../src/arcgis-search-provider-error');
 const FIELDS_DEFINITION = require('../src/fields-definition');
