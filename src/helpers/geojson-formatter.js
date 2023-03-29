@@ -51,10 +51,6 @@ function translateGeojson(input) {
 
 function getGeoJson(items, fieldsDefination) {
   const geojson = translateGeojson(items);
-  // Cache data for 10 seconds at a time by setting the ttl or 'Time to Live'
-  // geojson.ttl = 10
-  geojson.filtersApplied = { where: true };
-
   geojson.metadata = {
     name: 'ArcGIS Search', // Get the workbook name before ! symbol and set as layer name
     description: 'Search content in ArcGIS Online',
