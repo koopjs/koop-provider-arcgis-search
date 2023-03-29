@@ -5,7 +5,7 @@
 const ArcgisSearchProviderError = require('./arcgis-search-provider-error');
 const { buildPortalQuery } = require('./helpers/portal-query-builder');
 const { getGeoJson } = require('./helpers/geojson-formatter');
-const { getPortalItems } = require('./helpers/get-items-from-portal');
+const { getPortalItems, setUserAgentForPortalRequest } = require('./helpers/get-items-from-portal');
 const { validateRequestQuery } = require('./helpers/validate-request-query');
 
 const MAX_PAGE_SIZE = 100; // maximum number of results returned from portal per request
@@ -16,6 +16,7 @@ class ArcgisSearchModel {
   constructor(koop, options = {}) {
     this.log = koop.log;
     this.ttl = options.ttl || 0;
+    this.userAgent = options.userAgent && setUserAgentForPortalRequest(options.userAgent);
   }
   // Main getData method which is used to send data to Koop 
   async getData(req, callback) {
@@ -24,7 +25,7 @@ class ArcgisSearchModel {
       const portalQuery = buildPortalQuery(req.query, this.log);
       const items = await getPortalItems(PORTAL_URL, portalQuery, MAX_PAGE_SIZE);
       const geojson = getGeoJson(items, FIELDS_DEFINITION);
-      
+
       geojson.ttl = this.ttl;
       geojson.filtersApplied = { where: true };
       geojson.geometry = true;

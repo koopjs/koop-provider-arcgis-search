@@ -21,7 +21,7 @@ function formatGeoJsonFeature(input) {
       }
     });
   }
-  
+
   feature.properties.itemIdHash = transformId(feature.properties.id);
   return feature;
 }
@@ -41,18 +41,16 @@ function transformId(id) {
 }
 
 function translateGeojson(input) {
-  const features = {
+  return {
     type: 'FeatureCollection',
     features: input.items.map(formatGeoJsonFeature),
-    count: input.count
   };
-  return features;
 }
 
 function getGeoJson(items, fieldsDefination) {
   const geojson = translateGeojson(items);
   geojson.metadata = {
-    name: 'ArcGIS Search', // Get the workbook name before ! symbol and set as layer name
+    name: 'ArcGIS Search',
     description: 'Search content in ArcGIS Online',
     displayField: 'title',
     fields: fieldsDefination,

@@ -6,7 +6,7 @@ module.exports = class ArcgisSearchProviderError extends Error {
         Error.captureStackTrace(this, this.constructor);
         this.name = CUSTOM_ERROR_NAME;
         this.statusCode = statusCode;
-        if(customStack) {
+        if (customStack) {
             this.stack = customStack;
         }
     }

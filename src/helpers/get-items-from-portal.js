@@ -46,4 +46,8 @@ async function getRemainingPortalItems(requests) {
     return items;
 }
 
-module.exports = { getPortalItems }; 
+function setUserAgentForPortalRequest(userAgent) {
+    axios.defaults.headers.common['User-Agent'] = userAgent;
+    return userAgent;
+}
+module.exports = { getPortalItems, setUserAgentForPortalRequest }; 

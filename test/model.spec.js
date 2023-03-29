@@ -3,10 +3,13 @@ const nock = require('nock');
 const ArcgisSearchModel = require('../src/model');
 const withinLimitResponseFixture = require('./fixtures/within-limit-portal-response.json');
 const exceeedLimitResponseFixture = require('./fixtures/exceed-limit-portal-response.json');
+const withinLimitGeojsonFixture = require('./fixtures/within-limit-portal-geojson.json');
+const exceeedLimitGeojsonFixture = require('./fixtures/exceed-limit-portal-geojson.json');
 const { serializeQueryParams } = require('../src/helpers/portal-query-builder');
 const { formatGeoJsonFeature } = require('../src/helpers/geojson-formatter');
 const ArcgisSearchProviderError = require('../src/arcgis-search-provider-error');
 const FIELDS_DEFINITION = require('../src/fields-definition');
+const axios = require('axios');
 
 describe('ArcgisSearchModel', () => {
   beforeEach(() => {
@@ -80,10 +83,7 @@ describe('ArcgisSearchModel', () => {
       });
 
       expect(geojson.type).toBe('FeatureCollection');
-      expect([
-        ...exceeedLimitResponseFixture.results,
-        ...withinLimitResponseFixture.results
-      ].map(formatGeoJsonFeature)).toStrictEqual(geojson.features);
+      expect(geojson.features).toStrictEqual(exceeedLimitGeojsonFixture);
     });
   });
 
@@ -127,7 +127,7 @@ describe('ArcgisSearchModel', () => {
 
     await model.getData(req, (err, geojson) => {
       expect(geojson).toBeDefined();
-      expect(geojson.count).toBe(46);
+      expect(geojson.features.length).toBe(46);
 
       expect(geojson.metadata).toBeDefined();
       expect(geojson.metadata).toStrictEqual({
@@ -142,8 +142,7 @@ describe('ArcgisSearchModel', () => {
       expect(geojson.type).toBe('FeatureCollection');
       expect(Array.isArray(geojson.features)).toBe(true);
       expect(geojson.features.length).toBe(46);
-
-      expect(withinLimitResponseFixture.results.map(formatGeoJsonFeature)).toStrictEqual(geojson.features);
+      expect(geojson.features).toStrictEqual(withinLimitGeojsonFixture);
     });
   });
 
@@ -224,6 +223,130 @@ describe('ArcgisSearchModel', () => {
     await model.getData(req, (err, geojson) => {
       expect(err.statusCode).toBe(500);
       expect(err.message).toBe('Error in Arcgis Search Provider');
+    });
+  });
+
+  it('should set portal request user agent when user agent is passed in options via constructor', async () => {
+    const req = {
+      query: {
+        f: "json",
+        where: "typekeywords = 'hubSite'",
+        returnGeometry: true,
+        spatialRel: "esriSpatialRelIntersects",
+        maxAllowableOffset: 39135,
+        geometry: {
+          xmin: -20037508.342788905,
+          ymin: 20037508.342788905,
+          xmax: -0.000004857778549194336,
+          ymax: 40075016.68557295,
+          spatialReference: {
+            wkid: 102100,
+          },
+        },
+        geometryType: "esriGeometryEnvelope",
+        inSR: 102100,
+        outFields: "*",
+        outSR: 102100
+      }
+    };
+
+    const firstPagePortalQuery = {
+      f: "json",
+      q: "typekeywords:\"hubSite\"",
+      num: 100,
+      start: 1,
+      bbox: "-179.99999999999696,85.05112877980633,-4.363816717609226e-11,89.78600707473662",
+    };
+
+    nock('http://www.arcgis.com')
+      .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
+      .reply(200, withinLimitResponseFixture);
+
+    // test: we pass userAgent option
+    const model = new ArcgisSearchModel({}, { userAgent: 'custom-user-agent' });
+
+    await model.getData(req, (err, geojson) => {
+      expect(geojson).toBeDefined();
+      expect(geojson.features.length).toBe(46);
+
+      expect(geojson.metadata).toBeDefined();
+      expect(geojson.metadata).toStrictEqual({
+        name: 'ArcGIS Search',
+        description: 'Search content in ArcGIS Online',
+        displayField: 'title',
+        fields: FIELDS_DEFINITION,
+        geometryType: 'Polygon',
+        idField: 'itemIdHash'
+      });
+      expect(axios.defaults.headers.common['User-Agent']).toBe('custom-user-agent');
+      expect(geojson.type).toBe('FeatureCollection');
+      expect(Array.isArray(geojson.features)).toBe(true);
+      expect(geojson.features.length).toBe(46);
+
+      expect(withinLimitResponseFixture.results.map(formatGeoJsonFeature)).toStrictEqual(geojson.features);
+    });
+  });
+
+  it('should set ttl in geojson when ttl is passed in options via constructor', async () => {
+    const req = {
+      query: {
+        f: "json",
+        where: "typekeywords = 'hubSite'",
+        returnGeometry: true,
+        spatialRel: "esriSpatialRelIntersects",
+        maxAllowableOffset: 39135,
+        geometry: {
+          xmin: -20037508.342788905,
+          ymin: 20037508.342788905,
+          xmax: -0.000004857778549194336,
+          ymax: 40075016.68557295,
+          spatialReference: {
+            wkid: 102100,
+          },
+        },
+        geometryType: "esriGeometryEnvelope",
+        inSR: 102100,
+        outFields: "*",
+        outSR: 102100
+      }
+    };
+
+    const firstPagePortalQuery = {
+      f: "json",
+      q: "typekeywords:\"hubSite\"",
+      num: 100,
+      start: 1,
+      bbox: "-179.99999999999696,85.05112877980633,-4.363816717609226e-11,89.78600707473662",
+    };
+
+    nock('http://www.arcgis.com')
+      .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
+      .reply(200, withinLimitResponseFixture);
+
+    // test: we pass ttl option
+    const model = new ArcgisSearchModel({}, { ttl: 100 });
+
+    await model.getData(req, (err, geojson) => {
+      expect(geojson).toBeDefined();
+      expect(geojson.features.length).toBe(46);
+
+      expect(geojson.metadata).toBeDefined();
+      expect(geojson.metadata).toStrictEqual({
+        name: 'ArcGIS Search',
+        description: 'Search content in ArcGIS Online',
+        displayField: 'title',
+        fields: FIELDS_DEFINITION,
+        geometryType: 'Polygon',
+        idField: 'itemIdHash'
+      });
+
+      expect(geojson.type).toBe('FeatureCollection');
+      expect(Array.isArray(geojson.features)).toBe(true);
+      expect(geojson.features.length).toBe(46);
+
+      expect(geojson.ttl).toBe(100);
+
+      expect(withinLimitResponseFixture.results.map(formatGeoJsonFeature)).toStrictEqual(geojson.features);
     });
   });
 });

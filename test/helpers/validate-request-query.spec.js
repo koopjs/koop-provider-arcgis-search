@@ -159,7 +159,7 @@ describe('Validate Request Query', () => {
                 orderBy: 'title'
             }
         };
-        
+
         expect(() => validateRequestQuery(requestQuery)).not.toThrow(ArcgisSearchProviderError);
     });
 
@@ -192,7 +192,7 @@ describe('Validate Request Query', () => {
                 orderBy: 'title'
             }
         };
-        
+
         expect(() => validateRequestQuery(requestQuery)).not.toThrow(ArcgisSearchProviderError);
     });
 
@@ -224,7 +224,7 @@ describe('Validate Request Query', () => {
                 orderBy: 'title'
             }
         };
-        
+
         expect(() => validateRequestQuery(requestQuery)).not.toThrow(ArcgisSearchProviderError);
     });
 });
