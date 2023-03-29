@@ -61,7 +61,7 @@ describe('ArcgisSearchModel', () => {
       .get(`/sharing/rest/search?${serializeQueryParams(secondPagePortalQuery)}`)
       .reply(200, withinLimitResponseFixture);
 
-    const model = new ArcgisSearchModel();
+    const model = new ArcgisSearchModel({});
 
     await model.getData(req, (err, geojson) => {
       expect(geojson).toBeDefined();
@@ -123,7 +123,7 @@ describe('ArcgisSearchModel', () => {
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
       .reply(200, withinLimitResponseFixture);
 
-    const model = new ArcgisSearchModel();
+    const model = new ArcgisSearchModel({});
 
     await model.getData(req, (err, geojson) => {
       expect(geojson).toBeDefined();
@@ -183,7 +183,7 @@ describe('ArcgisSearchModel', () => {
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
       .reply(400, 'portal error');
 
-    const model = new ArcgisSearchModel();
+    const model = new ArcgisSearchModel({});
 
     await model.getData(req, (err, geojson) => {
       expect(err.statusCode).toBe(400);
@@ -219,7 +219,8 @@ describe('ArcgisSearchModel', () => {
         outSR: 102100
       }
     };
-    const model = new Model();
+
+    const model = new Model({});
     await model.getData(req, (err, geojson) => {
       expect(err.statusCode).toBe(500);
       expect(err.message).toBe('Error in Arcgis Search Provider');
