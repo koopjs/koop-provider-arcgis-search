@@ -10,8 +10,8 @@ const provider = {
   name: 'arcgissearch',
   hosts: false,
   disableIdParam: true,
-  Model: require('./model'),
-  version: require('../package.json').version
+  Model: require('./src/model'),
+  version: require('./package.json').version
 };
 
 module.exports = provider;
