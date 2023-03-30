@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Added
+* Support for `bbox` query parameter for Arcgis portal search
+* Better batching mechanism to retreive data from Arcgis portal when result exceeds the limit
+* Request query validation
+* Unit tests and coverage badge
+
+### Changed
+* Refactor code for better readability and maintainability
+
 ## [1.0.2] - 2019-08-01
 ### Fixed
 * remove aws-serveless package from package dependencies
