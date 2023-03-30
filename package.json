@@ -2,7 +2,7 @@
   "name": "@koopjs/provider-arcgis-search",
   "version": "2.0.0",
   "description": "Koop provider for ArcGIS Search",
-  "main": "index.js",
+  "main": "src/index.js",
   "directories": {
     "test": "test"
   },

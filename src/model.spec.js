@@ -344,4 +344,122 @@ describe('ArcgisSearchModel', () => {
       expect(geojson.ttl).toBe(100);
     });
   });
+
+  it('should set custom portal endpoint when portalUrl is passed in options via constructor', async () => {
+    const req = {
+      query: {
+        f: "json",
+        where: "typekeywords = 'hubSite'",
+        returnGeometry: true,
+        spatialRel: "esriSpatialRelIntersects",
+        maxAllowableOffset: 39135,
+        geometry: {
+          xmin: -20037508.342788905,
+          ymin: 20037508.342788905,
+          xmax: -0.000004857778549194336,
+          ymax: 40075016.68557295,
+          spatialReference: {
+            wkid: 102100,
+          },
+        },
+        geometryType: "esriGeometryEnvelope",
+        inSR: 102100,
+        outFields: "*",
+        outSR: 102100
+      }
+    };
+
+    const firstPagePortalQuery = {
+      f: "json",
+      q: "typekeywords:\"hubSite\"",
+      num: 100,
+      start: 1,
+      bbox: "-179.99999999999696,85.05112877980633,-4.363816717609226e-11,89.78600707473662",
+    };
+
+    nock('http://www.devext.arcgis.com')
+      .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
+      .reply(200, withinLimitResponseFixture);
+
+    const customPortalUrl = 'http://www.devext.arcgis.com/sharing/rest/search';
+    // test: we pass ttl option
+    const model = new ArcgisSearchModel({}, { portalUrl: customPortalUrl });
+    expect(model.portalUrl).toBe(customPortalUrl);
+    await model.getData(req, (err, geojson) => {
+      expect(geojson).toBeDefined();
+      expect(geojson.features.length).toBe(46);
+
+      expect(geojson.metadata).toBeDefined();
+      expect(geojson.metadata).toStrictEqual({
+        name: 'ArcGIS Search',
+        description: 'Search content in ArcGIS Online',
+        displayField: 'title',
+        fields: FIELDS_DEFINITION,
+        geometryType: 'Polygon',
+        idField: 'itemIdHash'
+      });
+
+      expect(geojson.type).toBe('FeatureCollection');
+      expect(Array.isArray(geojson.features)).toBe(true);
+      expect(geojson.features.length).toBe(46);
+
+    });
+  });
+
+  it('should set default portal endpoint when portalUrl is not passed in options via constructor', async () => {
+    const req = {
+      query: {
+        f: "json",
+        where: "typekeywords = 'hubSite'",
+        returnGeometry: true,
+        spatialRel: "esriSpatialRelIntersects",
+        maxAllowableOffset: 39135,
+        geometry: {
+          xmin: -20037508.342788905,
+          ymin: 20037508.342788905,
+          xmax: -0.000004857778549194336,
+          ymax: 40075016.68557295,
+          spatialReference: {
+            wkid: 102100,
+          },
+        },
+        geometryType: "esriGeometryEnvelope",
+        inSR: 102100,
+        outFields: "*",
+        outSR: 102100
+      }
+    };
+
+    const firstPagePortalQuery = {
+      f: "json",
+      q: "typekeywords:\"hubSite\"",
+      num: 100,
+      start: 1,
+      bbox: "-179.99999999999696,85.05112877980633,-4.363816717609226e-11,89.78600707473662",
+    };
+
+    nock('http://www.arcgis.com')
+      .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
+      .reply(200, withinLimitResponseFixture);
+
+    const model = new ArcgisSearchModel({});
+    await model.getData(req, (err, geojson) => {
+      expect(geojson).toBeDefined();
+      expect(geojson.features.length).toBe(46);
+
+      expect(geojson.metadata).toBeDefined();
+      expect(geojson.metadata).toStrictEqual({
+        name: 'ArcGIS Search',
+        description: 'Search content in ArcGIS Online',
+        displayField: 'title',
+        fields: FIELDS_DEFINITION,
+        geometryType: 'Polygon',
+        idField: 'itemIdHash'
+      });
+
+      expect(geojson.type).toBe('FeatureCollection');
+      expect(Array.isArray(geojson.features)).toBe(true);
+      expect(geojson.features.length).toBe(46);
+    });
+  });
 });
