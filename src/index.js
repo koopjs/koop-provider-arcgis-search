@@ -5,15 +5,13 @@
 
   Documentation: http://koopjs.github.io/docs/specs/provider/
 */
-
 const provider = {
   type: 'provider',
   name: 'arcgissearch',
   hosts: false,
   disableIdParam: true,
   Model: require('./model'),
-  routes: require('./routes'),
-  version: require('./package.json').version
-}
+  version: require('../package.json').version
+};
 
-module.exports = provider
+module.exports = provider;

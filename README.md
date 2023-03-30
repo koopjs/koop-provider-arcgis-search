@@ -1,4 +1,5 @@
 # Koop Provider for ArcGIS Search
+![Coverage](./coverage.svg)
 
 Provides a GeoService API to ArcGIS Search for Online and Portal
 
