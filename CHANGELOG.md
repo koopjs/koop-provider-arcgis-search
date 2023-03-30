@@ -3,8 +3,8 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/).
 
-## Unreleased
 ## [2.0.0] - 2023-03-30
+### Added
 * Support for `bbox` query parameter for Arcgis portal search
 * Better batching mechanism to retreive data from Arcgis portal when result exceeds the limit
 * Request query validation
