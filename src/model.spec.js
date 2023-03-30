@@ -345,7 +345,7 @@ describe('ArcgisSearchModel', () => {
     });
   });
 
-  it('should set pass portal endpoint when portalEnv dev is passed in options via constructor', async () => {
+  it('should set portal endpoint when portalEnv dev is passed in options via constructor', async () => {
     const req = {
       query: {
         f: "json",
@@ -403,7 +403,7 @@ describe('ArcgisSearchModel', () => {
     });
   });
 
-  it('should set pass portal endpoint when portalEnv qa is passed in options via constructor', async () => {
+  it('should set portal endpoint when portalEnv qa is passed in options via constructor', async () => {
     const req = {
       query: {
         f: "json",
