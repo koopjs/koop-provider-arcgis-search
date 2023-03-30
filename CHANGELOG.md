@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 * importing module issue
 
+### Added
+* Support for custom portal endpoint 
+
 ## [2.0.0] - 2023-03-30
 ### Added
 * Support for `bbox` query parameter for Arcgis portal search
