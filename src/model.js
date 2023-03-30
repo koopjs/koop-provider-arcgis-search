@@ -10,12 +10,17 @@ const { validateRequestQuery } = require('./helpers/validate-request-query');
 
 const MAX_PAGE_SIZE = 100; // maximum number of results returned from portal per request
 const FIELDS_DEFINITION = require('./fields-definition');
-const PORTAL_URL = 'http://www.arcgis.com/sharing/rest/search';
+const PORTAL_ENDPOINTS = {
+  prod: 'http://www.arcgis.com/sharing/rest/search',
+  qa: 'https://qaext.arcgis.com/sharing/rest/search',
+  dev: 'https://devext.arcgis.com/sharing/rest/search'
+};
 
 class ArcgisSearchModel {
   constructor(koop, options = {}) {
     this.log = koop.log;
     this.ttl = options.ttl || 0;
+    this.portalUrl = PORTAL_ENDPOINTS[options.portalEnv] || PORTAL_ENDPOINTS['prod'];
     this.userAgent = options.userAgent && setUserAgentForPortalRequest(options.userAgent);
   }
   // Main getData method which is used to send data to Koop 
@@ -23,7 +28,7 @@ class ArcgisSearchModel {
     try {
       validateRequestQuery(req.query);
       const portalQuery = buildPortalQuery(req.query, this.log);
-      const items = await getPortalItems(PORTAL_URL, portalQuery, MAX_PAGE_SIZE);
+      const items = await getPortalItems(this.portalUrl, portalQuery, MAX_PAGE_SIZE);
       const geojson = getGeoJson(items, FIELDS_DEFINITION);
 
       geojson.ttl = this.ttl;

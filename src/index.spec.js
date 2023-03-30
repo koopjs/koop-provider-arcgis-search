@@ -1,4 +1,4 @@
-const providerConfig = require('../src');
+const providerConfig = require('./');
 const ArcgiSearchModel = require('../src/model');
 
 describe('provider registration', () => {
