@@ -2,7 +2,6 @@
 const ArcgisSearchProviderError = require('../arcgis-search-provider-error');
 const { validSortFields, validSortOrder } = require('../valid-sort-options');
 const Joi = require('joi');
-
 const geoservicesEnvelopeObjSchema = Joi.object({
   xmin: Joi.number().required(),
   ymin: Joi.number().required(),
@@ -54,15 +53,10 @@ function validateRequestQuery(requestQuery) {
 };
 
 function parseRequestQuery(requestQuery) {
-  try {
-    const parsedRequestQuery = {
-      ...requestQuery,
-      geometry: typeof requestQuery.geometry === 'string' ? JSON.parse(requestQuery.geometry) : requestQuery.geometry
-    };
-    return parsedRequestQuery;
-  } catch (err) {
-    throw new ArcgisSearchProviderError('geometry field is not valid JSON', 400);
-  }
+  return {
+    ...requestQuery,
+    geometry: typeof requestQuery.geometry === 'string' ? parseGeometry(requestQuery.geometry) : requestQuery.geometry
+  };
 }
 
 function validateSortOptions(orderByFields) {
@@ -74,6 +68,18 @@ function validateSortOptions(orderByFields) {
 
   if (orderByArr.length === 2 && !validSortOrder[validSortOrder[1]]) {
     throw new ArcgisSearchProviderError('Invalid sort order given', 400);
+  }
+}
+
+function parseGeometry(input) {
+  try {
+    return JSON.parse(input);
+  } catch (err) {
+    if (input.includes(',')) {
+      return input.split(',');
+    } else {
+      throw new ArcgisSearchProviderError('Geometry field is not in valid format', 400);
+    }
   }
 }
 
