@@ -42,7 +42,8 @@ const requestQuerySchema = Joi.object().keys({
 }).unknown(true);
 
 function validateRequestQuery(requestQuery) {
-  const validate = requestQuerySchema.validate(requestQuery);
+  const prasedRequerQuery = parseRequestQuery(requestQuery);
+  const validate = requestQuerySchema.validate(prasedRequerQuery);
   if (validate.error) {
     throw new ArcgisSearchProviderError(validate.error.message, 400);
   }
@@ -51,6 +52,18 @@ function validateRequestQuery(requestQuery) {
     validateSortOptions(requestQuery.orderByFields);
   }
 };
+
+function parseRequestQuery(requestQuery) {
+  try {
+    const parsedRequestQuery = {
+      ...requestQuery,
+      geometry: typeof requestQuery.geometry === 'string' ? JSON.parse(requestQuery.geometry) : requestQuery.geometry
+    };
+    return parsedRequestQuery;
+  } catch (err) {
+    throw new ArcgisSearchProviderError('geometry field is not valid JSON', 400);
+  }
+}
 
 function validateSortOptions(orderByFields) {
   const { orderBy } = orderByFields;
