@@ -11,6 +11,7 @@
     "debug": "cd koop-server-app && NODE_ENV=test node server.js",
     "lint": "eslint .",
     "test": "jest --coverage",
+    "release": "npm publish ./ --access=public ",
     "test:cov": "jest --coverage --coverageReporters='json-summary' && coverage-badges --source ./test/coverage/coverage-summary.json --output ./coverage.svg",
     "test:watch": "jest --watch"
   },
