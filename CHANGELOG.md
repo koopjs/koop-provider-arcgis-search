@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Added
+* Support for stringifield valid geometry JSON object in request query
+
 ## [2.0.1] - 2023-03-30
 ### Fixed
 * importing module issue

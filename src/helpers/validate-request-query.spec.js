@@ -227,4 +227,120 @@ describe('Validate Request Query', () => {
 
         expect(() => validateRequestQuery(requestQuery)).not.toThrow(ArcgisSearchProviderError);
     });
+
+    it('should support stringified valid JSON geometry object', async () => {
+        const requestQuery = {
+            f: "json",
+            where: "typekeywords = 'hubSite'",
+            returnGeometry: true,
+            spatialRel: "esriSpatialRelIntersects",
+            maxAllowableOffset: 39135,
+            geometry: JSON.stringify({
+                xmin: -20037508.342788905,
+                ymin: 20037508.342788905,
+                xmax: -0.000004857778549194336,
+                ymax: 40075016.68557295,
+                spatialReference: {
+                    wkid: 3785,
+                },
+            }),
+            geometryType: "esriGeometryEnvelope",
+            inSR: {
+                spatialReference: {
+                    wkt: 102100
+                }
+            },
+            outFields: "*",
+            outSR: 102100,
+            orderByFields: {
+                orderBy: 'title'
+            }
+        };
+
+        expect(() => validateRequestQuery(requestQuery)).not.toThrow(ArcgisSearchProviderError);
+    });
+
+    it('should throw validation error if invalid JSON geometry object is supplied', async () => {
+        const requestQuery = {
+            f: "json",
+            where: "typekeywords = 'hubSite'",
+            returnGeometry: true,
+            spatialRel: "esriSpatialRelIntersects",
+            maxAllowableOffset: 39135,
+            geometry: '{invalid: ',
+            geometryType: "esriGeometryEnvelope",
+            inSR: {
+                spatialReference: {
+                    wkt: 102100
+                }
+            },
+            outFields: "*",
+            outSR: 102100,
+            orderByFields: {
+                orderBy: 'title'
+            }
+        };
+
+        const validate = () => {
+            validateRequestQuery(requestQuery);
+        };
+
+        expect(validate).toThrow(ArcgisSearchProviderError);
+        expect(validate).toThrow('Geometry field is not in valid format');
+    });
+
+    it('should support comma separated geometry string', async () => {
+        const requestQuery = {
+            f: "json",
+            where: "typekeywords = 'hubSite'",
+            returnGeometry: true,
+            spatialRel: "esriSpatialRelIntersects",
+            maxAllowableOffset: 39135,
+            geometry: '10,10,10,10',
+            inSR: {
+                spatialReference: {
+                    wkt: 102100
+                }
+            },
+            outFields: "*",
+            outSR: 102100,
+            orderByFields: {
+                orderBy: 'title'
+            }
+        };
+
+        const validate = () => {
+            validateRequestQuery(requestQuery);
+        };
+
+        expect(validate).not.toThrow(ArcgisSearchProviderError);
+    });
+
+    it('should throw validation error when geometry string is invalid', async () => {
+        const requestQuery = {
+            f: "json",
+            where: "typekeywords = 'hubSite'",
+            returnGeometry: true,
+            spatialRel: "esriSpatialRelIntersects",
+            maxAllowableOffset: 39135,
+            geometry: 'invalid geometry',
+            inSR: {
+                spatialReference: {
+                    wkt: 102100
+                }
+            },
+            outFields: "*",
+            outSR: 102100,
+            orderByFields: {
+                orderBy: 'title'
+            }
+        };
+
+        const validate = () => {
+            validateRequestQuery(requestQuery);
+        };
+
+        expect(validate).toThrow(ArcgisSearchProviderError);
+        expect(validate).toThrow('Geometry field is not in valid format');
+    });
 });
