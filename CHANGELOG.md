@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## [2.0.3] - 2023-04-13
 ### Added
 * Support to set log level
 * Log portal url whenever portal request is made 
