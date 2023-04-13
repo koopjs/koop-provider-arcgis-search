@@ -581,7 +581,7 @@ describe('ArcgisSearchModel', () => {
       expect(geojson.features.length).toBe(46);
       
     });
-    expect(loggerSpy).toHaveBeenCalled();
+    expect(loggerSpy).toHaveBeenCalledTimes(1);
     expect(loggerSpy).toHaveBeenCalledWith('Request made to http://www.arcgis.com/sharing/rest/search');
   });
 
@@ -620,7 +620,7 @@ describe('ArcgisSearchModel', () => {
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
       .reply(200, withinLimitResponseFixture);
-      
+
     const koopLogger = {
       info(msg) {
         return true;
