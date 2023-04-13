@@ -18,8 +18,9 @@ const PORTAL_ENDPOINTS = {
 
 class ArcgisSearchModel {
   constructor(koop, options = {}) {
-    this.log = koop.log;
+    this.log = koop.logger;
     this.ttl = options.ttl || 0;
+    this.logLevel = options.logLevel;
     this.portalUrl = PORTAL_ENDPOINTS[options.portalEnv] || PORTAL_ENDPOINTS['prod'];
     this.userAgent = options.userAgent && setUserAgentForPortalRequest(options.userAgent);
   }
@@ -29,6 +30,9 @@ class ArcgisSearchModel {
       validateRequestQuery(req.query);
       const portalQuery = buildPortalQuery(req.query, this.log);
       const items = await getPortalItems(this.portalUrl, portalQuery, MAX_PAGE_SIZE);
+      if (this.logLevel) {
+        this.log[this.logLevel](`Request made to ${this.portalUrl}`);
+      }
       const geojson = getGeoJson(items, FIELDS_DEFINITION);
 
       geojson.ttl = this.ttl;

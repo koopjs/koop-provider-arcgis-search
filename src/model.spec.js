@@ -517,4 +517,137 @@ describe('ArcgisSearchModel', () => {
       expect(geojson.features.length).toBe(46);
     });
   });
+
+  it('should log with portal url when request to arcgis portal is made and logLevel is specified', async () => {
+    const req = {
+      query: {
+        f: "json",
+        where: "typekeywords = 'hubSite'",
+        returnGeometry: true,
+        spatialRel: "esriSpatialRelIntersects",
+        maxAllowableOffset: 39135,
+        geometry: {
+          xmin: -20037508.342788905,
+          ymin: 20037508.342788905,
+          xmax: -0.000004857778549194336,
+          ymax: 40075016.68557295,
+          spatialReference: {
+            wkid: 102100,
+          },
+        },
+        geometryType: "esriGeometryEnvelope",
+        inSR: 102100,
+        outFields: "*",
+        outSR: 102100
+      }
+    };
+
+    const firstPagePortalQuery = {
+      f: "json",
+      q: "typekeywords:\"hubSite\"",
+      num: 100,
+      start: 1,
+      bbox: "-179.99999999999696,85.05112877980633,-4.363816717609226e-11,89.78600707473662",
+    };
+
+    nock('http://www.arcgis.com')
+      .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
+      .reply(200, withinLimitResponseFixture);
+
+    const koopLogger = {
+      info(msg) {
+        return true;
+      },
+    };
+
+    const model = new ArcgisSearchModel({ logger: koopLogger }, { logLevel: 'info' });
+    const loggerSpy = jest.spyOn(model.log, 'info');
+    await model.getData(req, (err, geojson) => {
+      expect(geojson).toBeDefined();
+      expect(geojson.features.length).toBe(46);
+
+      expect(geojson.metadata).toBeDefined();
+      expect(geojson.metadata).toStrictEqual({
+        name: 'ArcGIS Search',
+        description: 'Search content in ArcGIS Online',
+        displayField: 'title',
+        fields: FIELDS_DEFINITION,
+        geometryType: 'Polygon',
+        idField: 'itemIdHash'
+      });
+
+      expect(geojson.type).toBe('FeatureCollection');
+      expect(Array.isArray(geojson.features)).toBe(true);
+      expect(geojson.features.length).toBe(46);
+      
+    });
+    expect(loggerSpy).toHaveBeenCalled();
+    expect(loggerSpy).toHaveBeenCalledWith('Request made to http://www.arcgis.com/sharing/rest/search');
+  });
+
+  it('should not log anything when request to arcgis portal is made and logLevel is not specified', async () => {
+    const req = {
+      query: {
+        f: "json",
+        where: "typekeywords = 'hubSite'",
+        returnGeometry: true,
+        spatialRel: "esriSpatialRelIntersects",
+        maxAllowableOffset: 39135,
+        geometry: {
+          xmin: -20037508.342788905,
+          ymin: 20037508.342788905,
+          xmax: -0.000004857778549194336,
+          ymax: 40075016.68557295,
+          spatialReference: {
+            wkid: 102100,
+          },
+        },
+        geometryType: "esriGeometryEnvelope",
+        inSR: 102100,
+        outFields: "*",
+        outSR: 102100
+      }
+    };
+
+    const firstPagePortalQuery = {
+      f: "json",
+      q: "typekeywords:\"hubSite\"",
+      num: 100,
+      start: 1,
+      bbox: "-179.99999999999696,85.05112877980633,-4.363816717609226e-11,89.78600707473662",
+    };
+
+    nock('http://www.arcgis.com')
+      .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
+      .reply(200, withinLimitResponseFixture);
+      
+    const koopLogger = {
+      info(msg) {
+        return true;
+      },
+    };
+
+    const model = new ArcgisSearchModel({ logger: koopLogger }, {});
+    const loggerSpy = jest.spyOn(model.log, 'info');
+    await model.getData(req, (err, geojson) => {
+      expect(geojson).toBeDefined();
+      expect(geojson.features.length).toBe(46);
+
+      expect(geojson.metadata).toBeDefined();
+      expect(geojson.metadata).toStrictEqual({
+        name: 'ArcGIS Search',
+        description: 'Search content in ArcGIS Online',
+        displayField: 'title',
+        fields: FIELDS_DEFINITION,
+        geometryType: 'Polygon',
+        idField: 'itemIdHash'
+      });
+
+      expect(geojson.type).toBe('FeatureCollection');
+      expect(Array.isArray(geojson.features)).toBe(true);
+      expect(geojson.features.length).toBe(46);
+      
+    });
+    expect(loggerSpy).not.toHaveBeenCalled();
+  });
 });
