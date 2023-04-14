@@ -560,7 +560,7 @@ describe('ArcgisSearchModel', () => {
       },
     };
 
-    const model = new ArcgisSearchModel({ logger: koopLogger }, { logLevel: 'info' });
+    const model = new ArcgisSearchModel({ log: koopLogger }, { logLevel: 'info' });
     const loggerSpy = jest.spyOn(model.log, 'info');
     await model.getData(req, (err, geojson) => {
       expect(geojson).toBeDefined();
@@ -627,7 +627,7 @@ describe('ArcgisSearchModel', () => {
       },
     };
 
-    const model = new ArcgisSearchModel({ logger: koopLogger }, {});
+    const model = new ArcgisSearchModel({ log: koopLogger }, {});
     const loggerSpy = jest.spyOn(model.log, 'info');
     await model.getData(req, (err, geojson) => {
       expect(geojson).toBeDefined();
