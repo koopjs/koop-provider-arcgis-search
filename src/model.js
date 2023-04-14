@@ -18,7 +18,7 @@ const PORTAL_ENDPOINTS = {
 
 class ArcgisSearchModel {
   constructor(koop, options = {}) {
-    this.log = koop.logger;
+    this.log = koop.log;
     this.ttl = options.ttl || 0;
     this.logLevel = options.logLevel;
     this.portalUrl = PORTAL_ENDPOINTS[options.portalEnv] || PORTAL_ENDPOINTS['prod'];
