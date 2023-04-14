@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Fixed
+* Use Koop logger
+
 ## [2.0.3] - 2023-04-13
 ### Added
 * Support to set log level
