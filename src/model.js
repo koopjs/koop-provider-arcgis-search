@@ -3,7 +3,7 @@
   This file is required. It must export a class with at least one public function called `getData`
 */
 const ArcgisSearchProviderError = require('./arcgis-search-provider-error');
-const { buildPortalQuery } = require('./helpers/portal-query-builder');
+const { buildPortalQuery, serializeQueryParams } = require('./helpers/portal-query-builder');
 const { getGeoJson } = require('./helpers/geojson-formatter');
 const { getPortalItems, setUserAgentForPortalRequest } = require('./helpers/get-items-from-portal');
 const { validateRequestQuery } = require('./helpers/validate-request-query');
@@ -31,8 +31,9 @@ class ArcgisSearchModel {
       const portalQuery = buildPortalQuery(req.query, this.log);
       const items = await getPortalItems(this.portalUrl, portalQuery, MAX_PAGE_SIZE);
       if (this.logLevel) {
-        this.log[this.logLevel](`Request made to ${this.portalUrl}${req.originalUrl}`);
+        this.log[this.logLevel](`Request made to ${this.portalUrl}?${serializeQueryParams(portalQuery)}`);
       }
+
       const geojson = getGeoJson(items, FIELDS_DEFINITION);
 
       geojson.ttl = this.ttl;

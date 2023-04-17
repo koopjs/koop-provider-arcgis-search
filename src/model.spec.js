@@ -519,7 +519,8 @@ describe('ArcgisSearchModel', () => {
   });
 
   it('should log with portal url when request to arcgis portal is made and logLevel is specified', async () => {
-    const query = { 
+    const req = {
+      query: {
         f: "json",
         where: "typekeywords = 'hubSite'",
         returnGeometry: true,
@@ -538,10 +539,7 @@ describe('ArcgisSearchModel', () => {
         inSR: 102100,
         outFields: "*",
         outSR: 102100
-    };
-    const req = {
-      originalUrl: `/${serializeQueryParams(query)}`,
-      query
+      }
     };
 
     const firstPagePortalQuery = {
@@ -551,7 +549,6 @@ describe('ArcgisSearchModel', () => {
       start: 1,
       bbox: "-179.99999999999696,85.05112877980633,-4.363816717609226e-11,89.78600707473662",
     };
-
     nock('http://www.arcgis.com')
       .get(`/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`)
       .reply(200, withinLimitResponseFixture);
@@ -581,10 +578,10 @@ describe('ArcgisSearchModel', () => {
       expect(geojson.type).toBe('FeatureCollection');
       expect(Array.isArray(geojson.features)).toBe(true);
       expect(geojson.features.length).toBe(46);
-      
+
     });
     expect(loggerSpy).toHaveBeenCalledTimes(1);
-    expect(loggerSpy).toHaveBeenCalledWith(`Request made to http://www.arcgis.com/sharing/rest/search${req.originalUrl}`);
+    expect(loggerSpy).toHaveBeenCalledWith(`Request made to http://www.arcgis.com/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`);
   });
 
   it('should not log anything when request to arcgis portal is made and logLevel is not specified', async () => {
@@ -648,7 +645,7 @@ describe('ArcgisSearchModel', () => {
       expect(geojson.type).toBe('FeatureCollection');
       expect(Array.isArray(geojson.features)).toBe(true);
       expect(geojson.features.length).toBe(46);
-      
+
     });
     expect(loggerSpy).not.toHaveBeenCalled();
   });
