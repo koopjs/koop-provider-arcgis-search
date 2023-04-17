@@ -519,8 +519,7 @@ describe('ArcgisSearchModel', () => {
   });
 
   it('should log with portal url when request to arcgis portal is made and logLevel is specified', async () => {
-    const req = {
-      query: {
+    const query = { 
         f: "json",
         where: "typekeywords = 'hubSite'",
         returnGeometry: true,
@@ -539,7 +538,10 @@ describe('ArcgisSearchModel', () => {
         inSR: 102100,
         outFields: "*",
         outSR: 102100
-      }
+    };
+    const req = {
+      originalUrl: `/${serializeQueryParams(query)}`,
+      query
     };
 
     const firstPagePortalQuery = {
@@ -582,7 +584,7 @@ describe('ArcgisSearchModel', () => {
       
     });
     expect(loggerSpy).toHaveBeenCalledTimes(1);
-    expect(loggerSpy).toHaveBeenCalledWith('Request made to http://www.arcgis.com/sharing/rest/search');
+    expect(loggerSpy).toHaveBeenCalledWith(`Request made to http://www.arcgis.com/sharing/rest/search${req.originalUrl}`);
   });
 
   it('should not log anything when request to arcgis portal is made and logLevel is not specified', async () => {

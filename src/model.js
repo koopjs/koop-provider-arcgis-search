@@ -31,7 +31,7 @@ class ArcgisSearchModel {
       const portalQuery = buildPortalQuery(req.query, this.log);
       const items = await getPortalItems(this.portalUrl, portalQuery, MAX_PAGE_SIZE);
       if (this.logLevel) {
-        this.log[this.logLevel](`Request made to ${this.portalUrl}`);
+        this.log[this.logLevel](`Request made to ${this.portalUrl}${req.originalUrl}`);
       }
       const geojson = getGeoJson(items, FIELDS_DEFINITION);
 

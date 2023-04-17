@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Added
+* Log full portal request with query parameters
+
 ## [2.0.4] - 2023-04-14
 ### Fixed
 * Use Koop logger
