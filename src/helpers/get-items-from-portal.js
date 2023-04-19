@@ -1,9 +1,9 @@
 const axios = require('axios');
 const { serializeQueryParams } = require('./portal-query-builder');
 
-async function getPortalItems(portalItemsRequestOptions, logger) {
+async function getPortalItems(portalItemsRequestOptions, logOptions) {
     const { portalUrl, portalQuery, MAX_PAGE_SIZE } = portalItemsRequestOptions;
-    const firstPage = await fetchItemsFromPortal(portalUrl, portalQuery, logger);
+    const firstPage = await fetchItemsFromPortal(portalUrl, portalQuery, logOptions);
     const totalBatch = getTotalBatch(firstPage.total, MAX_PAGE_SIZE);
     if (totalBatch === 1) {
         return {
@@ -12,15 +12,15 @@ async function getPortalItems(portalItemsRequestOptions, logger) {
         };
     }
     const remainingRequests = buildRemainingPageRequests({ portalUrl, portalQuery, totalBatch, MAX_PAGE_SIZE });
-    const remainingItems = await getRemainingPortalItems(remainingRequests, logger);
+    const remainingItems = await getRemainingPortalItems(remainingRequests, logOptions);
     return {
         items: [...firstPage.results, ...remainingItems],
         count: firstPage.total
     };
 };
 
-async function fetchItemsFromPortal(portalUrl, portalQuery, logger) {
-    const { log, logLevel } = logger;
+async function fetchItemsFromPortal(portalUrl, portalQuery, logOptions) {
+    const { log, logLevel } = logOptions;
     const url = `${portalUrl}?${serializeQueryParams(portalQuery)}`;
     const items = await axios.get(url);
     if (logLevel) {
@@ -44,8 +44,8 @@ function buildRemainingPageRequests(requestOptions) {
     return requests;
 }
 
-async function getRemainingPortalItems(requests, logger) {
-    const { log, logLevel } = logger;
+async function getRemainingPortalItems(requests, logOptions) {
+    const { log, logLevel } = logOptions;
     const pages = await Promise.all(requests);
     const items = pages.reduce((collection, page) => {
         if (logLevel) {
