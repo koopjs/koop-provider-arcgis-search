@@ -11,7 +11,7 @@ async function getPortalItems(portalItemsRequestOptions, logOptions) {
             count: firstPage.total
         };
     }
-    const remainingRequests = buildRemainingPageRequests({ portalUrl, portalQuery, totalBatch, MAX_PAGE_SIZE });
+    const remainingRequests = buildRemainingPageRequests({ portalUrl, portalQuery, totalBatch, MAX_PAGE_SIZE }, logOptions);
     const remainingItems = await getRemainingPortalItems(remainingRequests, logOptions);
     return {
         items: [...firstPage.results, ...remainingItems],
@@ -22,10 +22,10 @@ async function getPortalItems(portalItemsRequestOptions, logOptions) {
 async function fetchItemsFromPortal(portalUrl, portalQuery, logOptions) {
     const { log, logLevel } = logOptions;
     const url = `${portalUrl}?${serializeQueryParams(portalQuery)}`;
-    const items = await axios.get(url);
     if (logLevel) {
         log[logLevel](`Request made to ${url}`);
     }
+    const items = await axios.get(url);
     return items.data;
 }
 
@@ -33,24 +33,25 @@ function getTotalBatch(total, maxPageSize) {
     return Math.ceil(total / maxPageSize);
 }
 
-function buildRemainingPageRequests(requestOptions) {
+function buildRemainingPageRequests(requestOptions, logOptions) {
     const { portalUrl, portalQuery, totalBatch, MAX_PAGE_SIZE } = requestOptions;
+    const { log, logLevel } = logOptions;
     const requests = [];
     // Multiple batches each with maxPageSize number of records
     for (let i = 1; i < totalBatch; i++) {
         portalQuery.start += MAX_PAGE_SIZE;
-        requests.push(axios.get(`${portalUrl}?${serializeQueryParams(portalQuery)}`));
+        const url = `${portalUrl}?${serializeQueryParams(portalQuery)}`;
+        if (logLevel) {
+            log[logLevel](`Request made to ${url}`);
+        }
+        requests.push(axios.get(url));
     }
     return requests;
 }
 
-async function getRemainingPortalItems(requests, logOptions) {
-    const { log, logLevel } = logOptions;
+async function getRemainingPortalItems(requests) {
     const pages = await Promise.all(requests);
     const items = pages.reduce((collection, page) => {
-        if (logLevel) {
-            log[logLevel](`Request made to https://${page.request.host}${page.request.path}`);
-        }
         return collection.concat(page.data.results);
     }, []);
     return items;
