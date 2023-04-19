@@ -61,14 +61,8 @@ function addSortOptionsToPortalQuery(portalQuery, orderByFields) {
 }
 
 function getSpatialReference(geometry, requestQuery, log) {
-  let queryWkid;
-
-  if(typeof geometry === Object) {
-    const { geometry: { spatialReference: { wkid } = {} } = {}} = geometry;
-    queryWkid = Number(wkid);
-  } else {
-    queryWkid = Number(requestQuery.inSR);
-  }
+  const { geometry: { spatialReference: { wkid } = {} } = {}} = geometry;
+  const queryWkid = Number(wkid) || Number(requestQuery.inSR);
 
   // assume 4326 if no SR is provided
   if (!queryWkid) {
