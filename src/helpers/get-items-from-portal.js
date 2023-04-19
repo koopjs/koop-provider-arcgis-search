@@ -12,7 +12,7 @@ async function getPortalItems(portalItemsRequestOptions, logOptions) {
         };
     }
     const remainingRequests = buildRemainingPageRequests({ portalUrl, portalQuery, totalBatch, MAX_PAGE_SIZE }, logOptions);
-    const remainingItems = await getRemainingPortalItems(remainingRequests, logOptions);
+    const remainingItems = await getRemainingPortalItems(remainingRequests);
     return {
         items: [...firstPage.results, ...remainingItems],
         count: firstPage.total
