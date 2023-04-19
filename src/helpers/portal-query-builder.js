@@ -3,7 +3,7 @@ const proj4 = require("proj4");
 const PROJ4_WKIDS = [4326, 4269, 3857, 3785, 900913, 102113]; // supported wkids by proj4
 
 function buildPortalQuery(requestQuery, log) {
-  const portalQuery = { f: 'json' };
+  let portalQuery = { f: 'json' };
   // TODO: ensure appropriate quotes for Search in Online
   // Remove any variant of 1=1 as it is not recognized by AGO search; replace = with; replace and ' with "
   portalQuery.q =
@@ -17,11 +17,11 @@ function buildPortalQuery(requestQuery, log) {
   portalQuery.start = requestQuery.resultOffset || 1;
 
   if (requestQuery.orderByFields) {
-    addSortOptionsToPortalQuery(portalQuery, requestQuery.orderByFields);
+    portalQuery = addSortOptionsToPortalQuery(portalQuery, requestQuery.orderByFields);
   }
 
   if (requestQuery.geometryType === 'esriGeometryEnvelope') {
-    addBboxToPortalQuery(portalQuery, requestQuery, log);
+    portalQuery = addBboxToPortalQuery(portalQuery, requestQuery, log);
   }
 
   return portalQuery;
@@ -36,8 +36,15 @@ function serializeQueryParams(params) {
 }
 
 function addBboxToPortalQuery(portalQuery, requestQuery, log) {
-  const extent = getExtent(requestQuery.geometry);
-  const inSR = extent && getSpatialReference(requestQuery, log);
+  let geometry;
+  try {
+    geometry = JSON.parse(requestQuery.geometry);
+  } catch(e){
+    geometry = requestQuery.geometry;
+  }
+
+  const extent = getExtent(geometry);
+  const inSR = extent && getSpatialReference(geometry, requestQuery, log);
   if (extent && inSR) {
     const normalizedExtent = convertToWGS84(extent, inSR);
     portalQuery.bbox = normalizedExtent.join(',');
@@ -53,9 +60,15 @@ function addSortOptionsToPortalQuery(portalQuery, orderByFields) {
   return portalQuery;
 }
 
-function getSpatialReference(requestQuery, log) {
-  const { geometry: { spatialReference: { wkid } = {} } } = requestQuery;
-  const queryWkid = wkid || requestQuery.inSR;
+function getSpatialReference(geometry, requestQuery, log) {
+  let queryWkid;
+
+  if(typeof geometry === Object) {
+    const { geometry: { spatialReference: { wkid } = {} } = {}} = geometry;
+    queryWkid = Number(wkid);
+  } else {
+    queryWkid = Number(requestQuery.inSR);
+  }
 
   // assume 4326 if no SR is provided
   if (!queryWkid) {

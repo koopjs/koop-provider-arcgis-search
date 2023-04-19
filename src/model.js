@@ -3,7 +3,7 @@
   This file is required. It must export a class with at least one public function called `getData`
 */
 const ArcgisSearchProviderError = require('./arcgis-search-provider-error');
-const { buildPortalQuery, serializeQueryParams } = require('./helpers/portal-query-builder');
+const { buildPortalQuery } = require('./helpers/portal-query-builder');
 const { getGeoJson } = require('./helpers/geojson-formatter');
 const { getPortalItems, setUserAgentForPortalRequest } = require('./helpers/get-items-from-portal');
 const { validateRequestQuery } = require('./helpers/validate-request-query');
@@ -11,7 +11,7 @@ const { validateRequestQuery } = require('./helpers/validate-request-query');
 const MAX_PAGE_SIZE = 100; // maximum number of results returned from portal per request
 const FIELDS_DEFINITION = require('./fields-definition');
 const PORTAL_ENDPOINTS = {
-  prod: 'http://www.arcgis.com/sharing/rest/search',
+  prod: 'https://www.arcgis.com/sharing/rest/search',
   qa: 'https://qaext.arcgis.com/sharing/rest/search',
   dev: 'https://devext.arcgis.com/sharing/rest/search'
 };
@@ -29,10 +29,15 @@ class ArcgisSearchModel {
     try {
       validateRequestQuery(req.query);
       const portalQuery = buildPortalQuery(req.query, this.log);
-      const items = await getPortalItems(this.portalUrl, portalQuery, MAX_PAGE_SIZE);
-      if (this.logLevel) {
-        this.log[this.logLevel](`Request made to ${this.portalUrl}?${serializeQueryParams(portalQuery)}`);
-      }
+      const items = await getPortalItems({ 
+          portalUrl: this.portalUrl, 
+          portalQuery, MAX_PAGE_SIZE
+        },
+        {
+          log: this.log, 
+          logLevel: this.logLevel 
+        }
+      );
 
       const geojson = getGeoJson(items, FIELDS_DEFINITION);
 

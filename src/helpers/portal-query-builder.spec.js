@@ -300,4 +300,32 @@ describe('Portal query builder', () => {
         expect(mockLogger.warn).toHaveBeenCalledTimes(1);
         expect(mockLogger.warn).toHaveBeenCalledWith('unsupported wkid 7815 provided');
     });
+
+    it('should parse geometry query field in string object format', async () => {
+        const requestQuery = {
+            f: "json",
+            where: "typekeywords = 'hubSite'",
+            returnGeometry: true,
+            spatialRel: "esriSpatialRelIntersects",
+            maxAllowableOffset: 39135,
+            geometry: '{"xmin":-20037508.342788905,"ymin":20037508.342788905,"xmax":-0.000004857778549194336,"ymax":40075016.68557295,"spatialReference":{"wkid":102100}}',
+            geometryType: "esriGeometryEnvelope",
+            inSR: 3785,
+            outFields: "*",
+            outSR: 102100,
+            orderByFields: {
+                orderBy: 'title'
+            }
+        };
+        const portalQuery = buildPortalQuery(requestQuery, mockLogger);
+        expect(portalQuery).toStrictEqual({
+            f: "json",
+            q: "typekeywords:\"hubSite\"",
+            num: 100,
+            start: 1,
+            bbox: "-179.99999999999696,85.05112877980633,-4.363816717609226e-11,89.78600707473662",
+            sortField: "title",
+            sortOrder: "DESC"
+        });
+    });
 });
