@@ -663,5 +663,7 @@ describe('ArcgisSearchModel', () => {
     });
     expect(loggerSpy).toHaveBeenCalledTimes(2);
     expect(loggerSpy).toHaveBeenNthCalledWith(1, `Request made to https://www.arcgis.com/sharing/rest/search?${serializeQueryParams(firstPagePortalQuery)}`);
+    expect(loggerSpy).toHaveBeenNthCalledWith(2, `Request made to https://www.arcgis.com/sharing/rest/search?${serializeQueryParams(secondPagePortalQuery)}`);
+
   });
 });
