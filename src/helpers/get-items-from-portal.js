@@ -41,12 +41,16 @@ function buildRemainingPageRequests(requestOptions, logOptions) {
     for (let i = 1; i < totalBatch; i++) {
         portalQuery.start += MAX_PAGE_SIZE;
         const url = `${portalUrl}?${serializeQueryParams(portalQuery)}`;
-        if (logLevel) {
-            log[logLevel](`Request made to ${url}`);
-        }
-        requests.push(axios.get(url));
+        requests.push(createPortalGetRequest(url, log, logLevel));
     }
     return requests;
+}
+
+async function createPortalGetRequest(url, log, logLevel){
+    if (logLevel) {
+        log[logLevel](`Request made to ${url}`);
+    }
+    return axios.get(url);
 }
 
 async function getRemainingPortalItems(requests) {
