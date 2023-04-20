@@ -8,7 +8,7 @@ const koop = new Koop();
 
 // Install the Sample Provider
 const provider = require('../src');
-koop.register(provider, { routePrefix: '/api/v3/connectors', ttl: 10 });
+koop.register(provider, { routePrefix: '/api/v3/connectors', ttl: 10, logLevel: 'info' });
 
 if (process.env.DEPLOY === 'export') {
   module.exports = koop.server;
