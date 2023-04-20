@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:20
 RUN mkdir -p /srv/www/koop
 ADD package.json /srv/www/koop
 WORKDIR /srv/www/koop
