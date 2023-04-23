@@ -5,7 +5,7 @@
 const ArcgisSearchProviderError = require('./arcgis-search-provider-error');
 const { buildPortalQuery } = require('./helpers/portal-query-builder');
 const { getGeoJson } = require('./helpers/geojson-formatter');
-const { getPortalItems, setUserAgentForPortalRequest } = require('./helpers/get-items-from-portal');
+const { getPortalItems, setUserAgentForPortalRequest, shouldFetchItemsFromPortal } = require('./helpers/get-items-from-portal');
 const { validateRequestQuery } = require('./helpers/validate-request-query');
 
 const MAX_PAGE_SIZE = 100; // maximum number of results returned from portal per request
@@ -27,19 +27,18 @@ class ArcgisSearchModel {
   // Main getData method which is used to send data to Koop 
   async getData(req, callback) {
     try {
-      validateRequestQuery(req.query);
-      const portalQuery = buildPortalQuery(req.query, this.log);
-      const items = await getPortalItems({ 
-          portalUrl: this.portalUrl, 
-          portalQuery, MAX_PAGE_SIZE
-        },
-        {
-          log: this.log, 
-          logLevel: this.logLevel 
-        }
-      );
-
-      const geojson = getGeoJson(items, FIELDS_DEFINITION);
+      let portalItems = { items: [] };
+      if (shouldFetchItemsFromPortal(req)) {
+        portalItems = await this.getItemsFromPortal(
+          this.portalUrl,
+          req.query,
+          {
+            log: this.log,
+            logLevel: this.logLevel
+          }
+        );
+      }
+      const geojson = getGeoJson(portalItems, FIELDS_DEFINITION);
 
       geojson.ttl = this.ttl;
       geojson.filtersApplied = { where: true };
@@ -55,6 +54,19 @@ class ArcgisSearchModel {
         )
       );
     }
+  }
+
+  async getItemsFromPortal(portalUrl, requestQuery, logOptions) {
+    validateRequestQuery(requestQuery);
+    const portalQuery = buildPortalQuery(requestQuery, logOptions.log);
+    const portalItems = await getPortalItems({
+        portalUrl,
+        portalQuery, 
+        maxPageSize: MAX_PAGE_SIZE
+      },
+      logOptions
+    );
+    return portalItems;
   }
 }
 

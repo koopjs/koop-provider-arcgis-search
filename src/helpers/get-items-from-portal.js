@@ -1,17 +1,18 @@
 const axios = require('axios');
 const { serializeQueryParams } = require('./portal-query-builder');
+const ArcgisSearchProviderError = require('../arcgis-search-provider-error');
 
 async function getPortalItems(portalItemsRequestOptions, logOptions) {
-    const { portalUrl, portalQuery, MAX_PAGE_SIZE } = portalItemsRequestOptions;
+    const { portalUrl, portalQuery, maxPageSize } = portalItemsRequestOptions;
     const firstPage = await fetchItemsFromPortal(portalUrl, portalQuery, logOptions);
-    const totalBatch = getTotalBatch(firstPage.total, MAX_PAGE_SIZE);
+    const totalBatch = getTotalBatch(firstPage.total, maxPageSize);
     if (totalBatch === 1) {
         return {
             items: firstPage.results,
             count: firstPage.total
         };
     }
-    const remainingRequests = buildRemainingPageRequests({ portalUrl, portalQuery, totalBatch, MAX_PAGE_SIZE }, logOptions);
+    const remainingRequests = buildRemainingPageRequests({ portalUrl, portalQuery, totalBatch, maxPageSize }, logOptions);
     const remainingItems = await getRemainingPortalItems(remainingRequests);
     return {
         items: [...firstPage.results, ...remainingItems],
@@ -34,19 +35,19 @@ function getTotalBatch(total, maxPageSize) {
 }
 
 function buildRemainingPageRequests(requestOptions, logOptions) {
-    const { portalUrl, portalQuery, totalBatch, MAX_PAGE_SIZE } = requestOptions;
+    const { portalUrl, portalQuery, totalBatch, maxPageSize } = requestOptions;
     const { log, logLevel } = logOptions;
     const requests = [];
     // Multiple batches each with maxPageSize number of records
     for (let i = 1; i < totalBatch; i++) {
-        portalQuery.start += MAX_PAGE_SIZE;
+        portalQuery.start += maxPageSize;
         const url = `${portalUrl}?${serializeQueryParams(portalQuery)}`;
         requests.push(createPortalGetRequest(url, log, logLevel));
     }
     return requests;
 }
 
-async function createPortalGetRequest(url, log, logLevel){
+async function createPortalGetRequest(url, log, logLevel) {
     if (logLevel) {
         log[logLevel](`Request made to ${url}`);
     }
@@ -65,4 +66,28 @@ function setUserAgentForPortalRequest(userAgent) {
     axios.defaults.headers.common['User-Agent'] = userAgent;
     return userAgent;
 }
-module.exports = { getPortalItems, setUserAgentForPortalRequest }; 
+
+function shouldFetchItemsFromPortal(request) {
+    const { originalUrl, query } = request;
+    if (isFeatureServiceMetaData(originalUrl)) {
+        return false;
+    }
+
+    if (!isFeatureServiceMetaData(originalUrl) && !isValidRequestQuery(query)) {
+        throw new ArcgisSearchProviderError('Invalid query', 400);
+    }
+
+    if (!isFeatureServiceMetaData(originalUrl) && isValidRequestQuery(query)) {
+        return true;
+    }
+}
+
+function isFeatureServiceMetaData(requestUrl) {
+    return new RegExp(/featureserver[./]*[0-9./]*$/, 'i').test(requestUrl);
+}
+
+function isValidRequestQuery(requestUrlQuery) {
+    return requestUrlQuery.where || requestUrlQuery.geometry;
+}
+
+module.exports = { getPortalItems, setUserAgentForPortalRequest, shouldFetchItemsFromPortal }; 
