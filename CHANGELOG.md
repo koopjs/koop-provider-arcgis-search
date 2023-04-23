@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/).
 
+## [2.0.7] - 2023-04-23
+### Added
+* Skip requests to portal for invalid requests
+
 ## [2.0.6] - 2023-04-21
 ### Added
 * Log all requests to portal
