@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/).
 
+## [2.0.8] - 2023-04-23
+### Changed
+* Update farmhash package
+
 ## [2.0.7] - 2023-04-23
 ### Added
 * Skip requests to portal for invalid requests
