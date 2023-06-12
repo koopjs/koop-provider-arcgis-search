@@ -69,7 +69,7 @@ function setUserAgentForPortalRequest(userAgent) {
 
 function shouldFetchItemsFromPortal(request) {
     const { path, query } = request;
-    if (isFeatureServiceMetaData(path, query)) {
+    if (isFeatureServiceMetaData(path)) {
         return false;
     }
 
