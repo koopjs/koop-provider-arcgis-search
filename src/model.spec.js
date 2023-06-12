@@ -136,6 +136,7 @@ describe('ArcgisSearchModel', () => {
 
     const model = new ArcgisSearchModel({});
     const getItemsFromPortalSpy = jest.spyOn(model, 'getItemsFromPortal');
+
     await model.getData(req, (err, geojson) => {
       expect(geojson).toBeDefined();
       expect(geojson.metadata).toBeDefined();

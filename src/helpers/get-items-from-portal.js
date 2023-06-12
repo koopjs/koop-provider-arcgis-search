@@ -82,10 +82,8 @@ function shouldFetchItemsFromPortal(request) {
     }
 }
 
-function isFeatureServiceMetaData(requestUrl, query) {
-    const isFeatureServiceMetaDataUrl = new RegExp(/featureserver[./]*[0-9./]*$/, 'i').test(requestUrl);
-    const isValidMetaDataFormatQuery = isFeatureServiceMetaDataUrl && query.f === 'json';
-    return isFeatureServiceMetaDataUrl || isValidMetaDataFormatQuery;
+function isFeatureServiceMetaData(requestPath) {
+    return new RegExp(/featureserver[./]*[0-9./]*$/, 'i').test(requestPath);;
 }
 
 function isValidRequestQuery(requestUrlQuery) {
