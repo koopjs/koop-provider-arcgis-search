@@ -42,7 +42,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query`,
       query
     };
 
@@ -118,7 +118,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -136,7 +136,6 @@ describe('ArcgisSearchModel', () => {
 
     const model = new ArcgisSearchModel({});
     const getItemsFromPortalSpy = jest.spyOn(model, 'getItemsFromPortal');
-
     await model.getData(req, (err, geojson) => {
       expect(geojson).toBeDefined();
       expect(geojson.metadata).toBeDefined();
@@ -180,7 +179,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -232,7 +231,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -266,7 +265,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -328,7 +327,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -392,7 +391,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -454,7 +453,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -515,7 +514,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -575,7 +574,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -644,7 +643,7 @@ describe('ArcgisSearchModel', () => {
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?${serializeQueryParams(query)}`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -710,11 +709,11 @@ describe('ArcgisSearchModel', () => {
 
   it('should not make request to portal and throw error if request endpoint contains invalid query', async () => {
     const query = {
-      f: "json",
+      format: "json",
     };
 
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query?fjson`,
+      path: '/api/v3/connectors/arcgissearch/rest/services/featureserver/0/query',
       query
     };
 
@@ -743,7 +742,7 @@ describe('ArcgisSearchModel', () => {
 
   it('should not make request to portal if request url is for feature server metadata with layer id', async () => {
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/`,
+      path: `/api/v3/connectors/arcgissearch/rest/services/featureserver/0/`,
       query: {}
     };
 
@@ -784,7 +783,7 @@ describe('ArcgisSearchModel', () => {
 
   it('should not make request to portal if request url is for feature server metadata without layer id', async () => {
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/featureserver/`,
+      path: `/api/v3/connectors/arcgissearch/rest/services/featureserver/`,
       query: {}
     };
 
@@ -825,7 +824,7 @@ describe('ArcgisSearchModel', () => {
 
   it('should ignore casing for the requests to feature server metadata', async () => {
     const req = {
-      originalUrl: `/api/v3/connectors/arcgissearch/rest/services/FeatureServer/`,
+      path: `/api/v3/connectors/arcgissearch/rest/services/FeatureServer/`,
       query: {}
     };
 

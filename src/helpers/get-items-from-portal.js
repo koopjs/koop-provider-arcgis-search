@@ -68,22 +68,24 @@ function setUserAgentForPortalRequest(userAgent) {
 }
 
 function shouldFetchItemsFromPortal(request) {
-    const { originalUrl, query } = request;
-    if (isFeatureServiceMetaData(originalUrl)) {
+    const { path, query } = request;
+    if (isFeatureServiceMetaData(path, query)) {
         return false;
     }
 
-    if (!isFeatureServiceMetaData(originalUrl) && !isValidRequestQuery(query)) {
+    if (!isFeatureServiceMetaData(path) && !isValidRequestQuery(query)) {
         throw new ArcgisSearchProviderError('Invalid query', 400);
     }
 
-    if (!isFeatureServiceMetaData(originalUrl) && isValidRequestQuery(query)) {
+    if (!isFeatureServiceMetaData(path) && isValidRequestQuery(query)) {
         return true;
     }
 }
 
-function isFeatureServiceMetaData(requestUrl) {
-    return new RegExp(/featureserver[./]*[0-9./]*$/, 'i').test(requestUrl);
+function isFeatureServiceMetaData(requestUrl, query) {
+    const isFeatureServiceMetaDataUrl = new RegExp(/featureserver[./]*[0-9./]*$/, 'i').test(requestUrl);
+    const isValidMetaDataFormatQuery = isFeatureServiceMetaDataUrl && query.f === 'json';
+    return isFeatureServiceMetaDataUrl || isValidMetaDataFormatQuery;
 }
 
 function isValidRequestQuery(requestUrlQuery) {
