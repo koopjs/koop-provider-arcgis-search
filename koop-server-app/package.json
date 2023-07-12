@@ -7,7 +7,7 @@
     "start": "node --inspect server.js"
   },
   "dependencies": {
-    "@koopjs/koop-core": "^8.0.2",
+    "@koopjs/koop-core": "^9.0.0",
     "config": "^3.2.5"
   },
   "author": "",
